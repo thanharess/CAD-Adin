@@ -60,7 +60,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Addin\" />
+    <Folder Include="Addin\Admin\" />
+    <Folder Include="Addin\Block\" />
+    <Folder Include="Addin\Button\" />
+    <Folder Include="Addin\Khac\" />
+    <Folder Include="Addin\Lenh ve\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
