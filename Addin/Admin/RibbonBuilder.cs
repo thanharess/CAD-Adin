@@ -150,21 +150,19 @@ namespace Autocad_addin.Framework
                 ShowImage = true,
                 ToolTip = a.ToolTip,
                 Size = a.Size,
-                CommandHandler = new RibbonCommandHandler(),
-                CommandParameter = m.Name + " "
+                CommandParameter = m.Name,                 // ← quan trọng
+                CommandHandler = new RibbonCommandHandler()
             };
 
-            // ⬇️ CHỈ set Height cho nút Standard
+            // Height chỉ cho Standard
             if (a.Size == RibbonItemSize.Standard)
                 btn.Height = 24;
-            // ⚠️ KHÔNG set Height cho nút Large — để AutoCAD tự tính (72px)
 
-            // Ảnh Standard 16×16
+            // Ảnh
             var img = LoadImage(a.Icon, 16);
             if (img != null) btn.Image = img;
 
-            // Ảnh Large 32×32
-            var largeImg = LoadImage(a.LargeIcon ?? a.Icon, 72);
+            var largeImg = LoadImage(a.LargeIcon ?? a.Icon, 32);
             if (largeImg != null) btn.LargeImage = largeImg;
 
             return btn;
@@ -312,16 +310,19 @@ namespace Autocad_addin.Framework
         private void LoadAllLisp()
         {
             if (!Directory.Exists(_lispFolder)) return;
+
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
 
-            // Load tất cả LISP trong folder Lisp + mọi folder con
-            var files = Directory.GetFiles(_lispFolder, "*.lsp",
-                                            SearchOption.AllDirectories);
+            // Load tất cả file .lsp (kể cả thư mục con)
+            var files = Directory.GetFiles(_lispFolder, "*.lsp", SearchOption.AllDirectories);
 
             foreach (var f in files)
-                doc.SendStringToExecute($"(load \"{f.Replace("\\", "/")}\") ",
-                                        true, false, false);
+            {
+                // Dùng đường dẫn tuyệt đối + escape đúng
+                string path = f.Replace("\\", "/");
+                doc.SendStringToExecute($"(load \"{path}\") ", true, false, false);
+            }
 
             doc.Editor.WriteMessage($"\n[Plugin] Đã load {files.Length} file LISP.");
         }

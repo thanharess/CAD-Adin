@@ -1,5 +1,7 @@
-﻿using System;
-using Autodesk.Windows;
+﻿using Autodesk.Windows;
+using System;
+using System.Reflection;
+using System.Windows.Input;
 
 namespace Autocad_addin.Framework
 {
@@ -73,19 +75,6 @@ namespace Autocad_addin.Framework
     // ============================================================
     // COMMAND HANDLER (giữ nguyên)
     // ============================================================
-    public class RibbonCommandHandler : System.Windows.Input.ICommand
-    {
-        public bool CanExecute(object p) => true;
-        public event EventHandler CanExecuteChanged { add { } remove { } }
-
-        public void Execute(object p)
-        {
-            if (p is string cmd)
-            {
-                var doc = Autodesk.AutoCAD.ApplicationServices
-                    .Application.DocumentManager.MdiActiveDocument;
-                doc?.SendStringToExecute(cmd, true, false, false);
-            }
-        }
-    }
 }
+    
+

@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Addin\Admin\RibbonApp.cs" />
     <Compile Include="Addin\Admin\RibbonBuilder.cs" />
+    <Compile Include="Addin\Admin\RibbonCommandHandler.cs" />
     <Compile Include="Addin\Admin\RibbonFramework.cs" />
     <Compile Include="Addin\Block\Code Block\Button_Block.cs" />
     <Compile Include="Addin\Khac\Button_3D.cs" />
