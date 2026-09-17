@@ -1,0 +1,56 @@
+(vl-load-com)
+
+(defun GetEffectiveBlockName (obj)
+  (if (vlax-property-available-p obj 'EffectiveName)
+    (vla-get-EffectiveName obj)
+    (vla-get-Name obj)
+  )
+)
+
+(defun c:BLDELETE (/ e obj blkName ss i en o delSS count)
+  (prompt "\n=== XOA BLOCK TRUNG TEN ===")
+  (setq e (car (entsel "\nChon block mau: ")))
+  (cond
+    ((null e) (prompt "\nKhong chon doi tuong."))
+    ((/= (cdr (assoc 0 (entget e))) "INSERT")
+     (prompt "\nDoi tuong da chon khong phai BLOCK."))
+    (T
+     (setq obj (vlax-ename->vla-object e))
+     (setq blkName (strcase (GetEffectiveBlockName obj)))
+     (prompt (strcat "\nTen block can xoa: " blkName))
+     (setq ss (ssget))
+     (if ss
+       (progn
+         (setq delSS (ssadd) count 0 i 0)
+         (repeat (sslength ss)
+           (setq en (ssname ss i))
+           (if (= (cdr (assoc 0 (entget en))) "INSERT")
+             (progn
+               (setq o (vlax-ename->vla-object en))
+               (if (= blkName (strcase (GetEffectiveBlockName o)))
+                 (progn
+                   (ssadd en delSS)
+                   (setq count (1+ count))
+                 )
+               )
+             )
+           )
+           (setq i (1+ i))
+         )
+         (if (> count 0)
+           (progn
+             (command "_.ERASE" delSS "")
+             (prompt (strcat "\nDa xoa " (itoa count) " block trung ten."))
+           )
+           (prompt "\nKhong co block trung ten de xoa.")
+         )
+       )
+       (prompt "\nKhong co doi tuong nao duoc quet chon.")
+     )
+    )
+  )
+  (princ)
+)
+
+(prompt "\nGo XB de chay lenh.")
+(princ)
