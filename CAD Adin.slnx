@@ -1,26 +1,3 @@
 <Solution>
-  <Folder Name="/Lisp/">
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Chuyển toàn bộ layer được chọn sang layer khác.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Chuyển đổi chữ hoa sang thường và ngược lại.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Chạy tất cả file lisp theo đường dẫn.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Chạy tất cả file lisp.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Delete Centerline, mark.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Delete text, leader note.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/DIM CHANGE STYLE WRITE.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/dimdelete V2.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Plot_PDF_auto - Copy.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Plot_PDF_auto.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Replace_text.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Scale_liner.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Text_fill_color_none.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Thay font chu all style text V2.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Thay_layer_bang_phim_tat.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/them chu vao text.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Tinh_dien_tich_hinh_hoc - Copy.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/Tinh_dien_tich_hinh_hoc.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/To line type change layer line.lsp" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/VV_TRICH_CHI_TIET_PHUC.VLX" />
-    <File Path="D:/FIL TẬP HỢP/Cad/Cad lisp/xoa chu trong text.lsp" />
-  </Folder>
   <Project Path="CAD Adin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8" />
 </Solution>
