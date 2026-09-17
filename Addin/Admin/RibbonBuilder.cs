@@ -1,5 +1,4 @@
-﻿using Autocad_addin.Framework.Autocad_addin.Framework;
-using Autodesk.AutoCAD.ApplicationServices;
+﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.Windows;
 using System;
 using System.Collections.Generic;
@@ -26,36 +25,48 @@ namespace Autocad_addin.Framework
             var ribbon = ComponentManager.Ribbon;
             if (ribbon == null) return;
 
-            // ===== 1. Quét method có [RibbonButton] =====
-            var found = new List<KeyValuePair<MethodInfo, RibbonButtonAttribute>>();
+            // ===== 1. Quét tất cả =====
+            var normalButtons = new List<KeyValuePair<MethodInfo, RibbonButtonAttribute>>();
+            var dropDowns = new List<KeyValuePair<MethodInfo, RibbonDropDownAttribute>>();
+            var dropItems = new List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>>();
+
             foreach (var type in _asm.GetTypes())
             {
                 foreach (var m in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
                 {
-                    var attr = m.GetCustomAttribute<RibbonButtonAttribute>();
-                    if (attr != null)
-                        found.Add(new KeyValuePair<MethodInfo, RibbonButtonAttribute>(m, attr));
+                    var a1 = m.GetCustomAttribute<RibbonButtonAttribute>();
+                    if (a1 != null) normalButtons.Add(new KeyValuePair<MethodInfo, RibbonButtonAttribute>(m, a1));
+
+                    var a2 = m.GetCustomAttribute<RibbonDropDownAttribute>();
+                    if (a2 != null) dropDowns.Add(new KeyValuePair<MethodInfo, RibbonDropDownAttribute>(m, a2));
+
+                    var a3 = m.GetCustomAttribute<RibbonDropItemAttribute>();
+                    if (a3 != null) dropItems.Add(new KeyValuePair<MethodInfo, RibbonDropItemAttribute>(m, a3));
                 }
             }
 
-            // ===== 2. Load LISP =====
             LoadAllLisp();
 
-            // ===== 3. Group theo Tab =====
+            // ===== 2. Gom tất cả vào 1 dict theo Tab → Panel =====
+            // Mỗi phần tử là 1 "item" (nút thường HOẶC dropdown)
             var tabDict = new Dictionary<string,
-                Dictionary<string, List<KeyValuePair<MethodInfo, RibbonButtonAttribute>>>>();
+                Dictionary<string, List<object>>>();
 
-            foreach (var kv in found)
+            // Nút thường
+            foreach (var kv in normalButtons)
             {
                 var a = kv.Value;
-                if (!tabDict.ContainsKey(a.Tab))
-                    tabDict[a.Tab] = new Dictionary<string, List<KeyValuePair<MethodInfo, RibbonButtonAttribute>>>();
-                if (!tabDict[a.Tab].ContainsKey(a.Panel))
-                    tabDict[a.Tab][a.Panel] = new List<KeyValuePair<MethodInfo, RibbonButtonAttribute>>();
-                tabDict[a.Tab][a.Panel].Add(kv);
+                AddToDict(tabDict, a.Tab, a.Panel, kv);
             }
 
-            // ===== 4. Duyệt Tab =====
+            // Dropdown
+            foreach (var kv in dropDowns)
+            {
+                var a = kv.Value;
+                AddToDict(tabDict, a.Tab, a.Panel, kv);
+            }
+
+            // ===== 3. Duyệt Tab =====
             foreach (var tabKv in tabDict)
             {
                 string tabId = "TAB_" + tabKv.Key.Replace(" ", "_");
@@ -66,46 +77,42 @@ namespace Autocad_addin.Framework
                     ribbon.Tabs.Add(tab);
                 }
 
-                // ===== 5. Duyệt Panel =====
+                // ===== 4. Duyệt Panel =====
                 foreach (var panelKv in tabKv.Value)
                 {
                     var src = new RibbonPanelSource { Title = panelKv.Key };
 
+                    // Sort theo Order
                     var list = panelKv.Value;
-                    list.Sort((x, y) => x.Value.Order.CompareTo(y.Value.Order));
+                    list.Sort((a, b) => GetOrder(a).CompareTo(GetOrder(b)));
 
-                    // ⬇️ DÙNG 1 ROWPANEL, CHÈN ROWBREAK GIỮA CÁC NÚT
-                    var row = new RibbonRowPanel();
+                    // Chia cột - tối đa 3 hàng/cột
+                    const int MaxRows = 3;
+                    RibbonRowPanel currentCol = new RibbonRowPanel();
+                    int countInCol = 0;
 
-                    for (int i = 0; i < list.Count; i++)
+                    foreach (var obj in list)
                     {
-                        var item = list[i];
-
-                        // Chèn RowBreak TRƯỚC nút thứ 2 trở đi
-                        if (i > 0)
-                            row.Items.Add(new RibbonRowBreak());
-
-                        var btn = new RibbonButton
+                        if (countInCol >= MaxRows)
                         {
-                            Text = item.Value.Text,
-                            ShowText = true,
-                            ShowImage = true,
-                            ToolTip = item.Value.ToolTip,
-                            Size = item.Value.Size,
-                            CommandHandler = new RibbonCommandHandler(),
-                            CommandParameter = item.Key.Name + " "
-                        };
+                            src.Items.Add(currentCol);
+                            currentCol = new RibbonRowPanel();
+                            countInCol = 0;
+                        }
+                        if (countInCol > 0)
+                            currentCol.Items.Add(new RibbonRowBreak());
 
-                        var img = LoadImage(item.Value.Icon);
-                        if (img != null) btn.Image = img;
+                        // Tạo nút/ dropdown
+                        if (obj is KeyValuePair<MethodInfo, RibbonButtonAttribute> nb)
+                            currentCol.Items.Add(CreateButton(nb.Key, nb.Value));
+                        else if (obj is KeyValuePair<MethodInfo, RibbonDropDownAttribute> dd)
+                            currentCol.Items.Add(CreateDropDown(dd.Key, dd.Value, dropItems));
 
-                        var largeImg = LoadImage(item.Value.LargeIcon ?? item.Value.Icon);
-                        if (largeImg != null) btn.LargeImage = largeImg;
-
-                        row.Items.Add(btn);
+                        countInCol++;
                     }
 
-                    src.Items.Add(row);
+                    if (countInCol > 0) src.Items.Add(currentCol);
+
                     var panel = new RibbonPanel { Source = src };
                     tab.Panels.Add(panel);
                 }
@@ -113,10 +120,144 @@ namespace Autocad_addin.Framework
             }
 
             Application.DocumentManager.MdiActiveDocument?
-                .Editor.WriteMessage($"\n[Plugin] Đã tạo {tabDict.Count} tab, {found.Count} nút.");
+                .Editor.WriteMessage($"\n[Plugin] Đã tạo {tabDict.Count} tab.");
         }
 
-        private System.Windows.Media.ImageSource LoadImage(string iconName)
+        // Hàm hỗ trợ
+        private void AddToDict(Dictionary<string, Dictionary<string, List<object>>> dict,
+                               string tab, string panel, object item)
+        {
+            if (!dict.ContainsKey(tab))
+                dict[tab] = new Dictionary<string, List<object>>();
+            if (!dict[tab].ContainsKey(panel))
+                dict[tab][panel] = new List<object>();
+            dict[tab][panel].Add(item);
+        }
+
+        private int GetOrder(object obj)
+        {
+            if (obj is KeyValuePair<MethodInfo, RibbonButtonAttribute> nb) return nb.Value.Order;
+            if (obj is KeyValuePair<MethodInfo, RibbonDropDownAttribute> dd) return dd.Value.Order;
+            return 0;
+        }
+
+        private RibbonButton CreateButton(MethodInfo m, RibbonButtonAttribute a)
+        {
+            var btn = new RibbonButton
+            {
+                Text = a.Text,
+                ShowText = true,
+                ShowImage = true,
+                ToolTip = a.ToolTip,
+                Size = a.Size,
+                CommandHandler = new RibbonCommandHandler(),
+                CommandParameter = m.Name + " "
+            };
+
+            // ⬇️ CHỈ set Height cho nút Standard
+            if (a.Size == RibbonItemSize.Standard)
+                btn.Height = 24;
+            // ⚠️ KHÔNG set Height cho nút Large — để AutoCAD tự tính (72px)
+
+            // Ảnh Standard 16×16
+            var img = LoadImage(a.Icon, 16);
+            if (img != null) btn.Image = img;
+
+            // Ảnh Large 32×32
+            var largeImg = LoadImage(a.LargeIcon ?? a.Icon, 72);
+            if (largeImg != null) btn.LargeImage = largeImg;
+
+            return btn;
+        }
+
+        private RibbonSplitButton CreateDropDown(MethodInfo m,
+     RibbonDropDownAttribute a,
+     List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>> allItems)
+        {
+            // ============================================================
+            // 1. TẠO NÚT CHÍNH (SplitButton)
+            // ============================================================
+            var split = new RibbonSplitButton
+            {
+                Text = a.Text,
+                ShowText = true,
+                ShowImage = true,
+                ToolTip = a.ToolTip,
+                Size = a.Size,
+                IsSplit = false,
+                // ⚠️ KHÔNG set ListStyle (gây lỗi IconText/ListItem)
+                // ⚠️ KHÔNG set ListImageSize (enum không tồn tại)
+                CommandHandler = new RibbonCommandHandler(),
+                CommandParameter = m.Name + " "
+            };
+
+            // ============================================================
+            // 2. NÚT CHA "Box" — chỉ set Current, KHÔNG add vào Items
+            // ============================================================
+            var parentBtn = new RibbonButton
+            {
+                Text = a.Text,
+                ShowText = true,
+                ShowImage = true,
+                ToolTip = a.ToolTip,
+                Size = a.Size,
+                CommandHandler = new RibbonCommandHandler(),
+                CommandParameter = m.Name + " "
+            };
+
+            // ⬇️ CHỈ set Height cho nút Standard
+            if (a.Size == RibbonItemSize.Standard)
+                parentBtn.Height = 24;
+
+            var pImg = LoadImage(a.Icon, 16);
+            if (pImg != null) parentBtn.Image = pImg;
+
+            var pLargeImg = LoadImage(a.LargeIcon ?? a.Icon, 32);
+            if (pLargeImg != null) parentBtn.LargeImage = pLargeImg;
+
+            split.Current = parentBtn;
+            // ============================================================
+            // 3. LỌC CÁC ITEM CON CÓ Parent KHỚP
+            // ============================================================
+            var children = new List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>>();
+            foreach (var it in allItems)
+            {
+                if (it.Value.Parent == a.Text)
+                    children.Add(it);
+            }
+            children.Sort((x, y) => x.Value.Order.CompareTo(y.Value.Order));
+
+            // ============================================================
+            // 4. TẠO TỪNG ITEM CON + GÁN ẢNH
+            // ============================================================
+            foreach (var c in children)
+            {
+                var childBtn = new RibbonButton
+                {
+                    Text = c.Value.Text,
+                    ShowText = true,
+                    ShowImage = true,
+                    ToolTip = c.Value.ToolTip,
+                    CommandHandler = new RibbonCommandHandler(),
+                    CommandParameter = c.Key.Name + " ",
+                    Size = RibbonItemSize.Standard
+                };
+
+                // Ảnh nhỏ (16×16) cho item trong dropdown
+                // Item con trong dropdown = 16×16
+                var ci = LoadImage(c.Value.Icon, 16);
+                if (ci != null)
+                {
+                    childBtn.Image = ci;
+                    childBtn.LargeImage = ci;
+                }
+                split.Items.Add(childBtn);
+            }
+
+            return split;
+        }
+        // Load ảnh với kích thước mục tiêu (16 hoặc 32)
+        private System.Windows.Media.ImageSource LoadImage(string iconName, int targetSize = 16)
         {
             if (string.IsNullOrEmpty(iconName)) return null;
             try
@@ -124,15 +265,48 @@ namespace Autocad_addin.Framework
                 string path = Path.Combine(_imageFolder, iconName);
                 if (!File.Exists(path)) return null;
 
-                var bmp = new System.Windows.Media.Imaging.BitmapImage();
-                bmp.BeginInit();
-                bmp.UriSource = new Uri(path, UriKind.Absolute);
-                bmp.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                bmp.EndInit();
-                bmp.Freeze();
-                return bmp;
+                // ===== 1. Load ảnh gốc =====
+                var src = new System.Windows.Media.Imaging.BitmapImage();
+                src.BeginInit();
+                src.UriSource = new Uri(path, UriKind.Absolute);
+                src.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                src.EndInit();
+
+                // ===== 2. Tính toán tỉ lệ để FIT (không crop, không méo) =====
+                double srcW = src.PixelWidth;
+                double srcH = src.PixelHeight;
+
+                // Scale nhỏ hơn → Fit vào khung targetSize × targetSize
+                double scale = Math.Min(targetSize / srcW, targetSize / srcH);
+                double drawW = srcW * scale;
+                double drawH = srcH * scale;
+
+                // Căn giữa
+                double offsetX = (targetSize - drawW) / 2;
+                double offsetY = (targetSize - drawH) / 2;
+
+                // ===== 3. Vẽ ảnh đã scale vào bitmap mới =====
+                var visual = new System.Windows.Media.DrawingVisual();
+                using (var dc = visual.RenderOpen())
+                {
+                    var destRect = new System.Windows.Rect(offsetX, offsetY, drawW, drawH);
+                    dc.DrawImage(src, destRect);
+                }
+
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                    targetSize, targetSize, 96, 96,
+                    System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                rtb.Freeze();
+
+                return rtb;
             }
-            catch { return null; }
+            catch (System.Exception ex)
+            {
+                Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager
+                    .MdiActiveDocument?.Editor.WriteMessage($"\n[Plugin] Lỗi ảnh: {ex.Message}");
+                return null;
+            }
         }
 
         private void LoadAllLisp()

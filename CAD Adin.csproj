@@ -77,13 +77,13 @@
     <Compile Include="Addin\Admin\RibbonApp.cs" />
     <Compile Include="Addin\Admin\RibbonBuilder.cs" />
     <Compile Include="Addin\Admin\RibbonFramework.cs" />
+    <Compile Include="Addin\Khac\Button_3D.cs" />
     <Compile Include="Addin\Lenh ve\Button_LenhVe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Addin\Block\" />
     <Folder Include="Addin\Button\" />
-    <Folder Include="Addin\Khac\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Addin\Líp\Block\All in one.lsp" />
