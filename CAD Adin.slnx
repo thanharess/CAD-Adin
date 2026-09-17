@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="CAD Adin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="CAD Adin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
 </Solution>
