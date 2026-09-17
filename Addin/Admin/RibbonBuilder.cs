@@ -315,8 +315,15 @@ namespace Autocad_addin.Framework
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
 
-            foreach (var f in Directory.GetFiles(_lispFolder, "*.lsp"))
-                doc.SendStringToExecute($"(load \"{f.Replace("\\", "/")}\") ", true, false, false);
+            // Load tất cả LISP trong folder Lisp + mọi folder con
+            var files = Directory.GetFiles(_lispFolder, "*.lsp",
+                                            SearchOption.AllDirectories);
+
+            foreach (var f in files)
+                doc.SendStringToExecute($"(load \"{f.Replace("\\", "/")}\") ",
+                                        true, false, false);
+
+            doc.Editor.WriteMessage($"\n[Plugin] Đã load {files.Length} file LISP.");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace Autocad_addin.Addin_Autocad.Button
 {
-    public static class Button_LenhVe
+    public static class Button
     {
         // ===== CỘT 1 =====
         [RibbonButton("MY TOOLS", "Lệnh Vẽ", "Vẽ Đường Thẳng",

@@ -18,6 +18,12 @@ namespace Autocad_addin.Framework
         public string Icon { get; set; }
         public string LargeIcon { get; set; }
         public bool NewRow { get; set; } = false;
+        public bool HasDialogLauncher { get; set; } = false;
+        public string DialogCommand { get; set; }
+
+        // ⬇️ THÊM NAMESPACE
+        public string Namespace { get; set; }   // Nhóm LISP (Block, Layer, Text...)
+
         public RibbonButtonAttribute(string tab, string panel, string text)
         {
             Tab = tab; Panel = panel; Text = text;
@@ -38,7 +44,7 @@ namespace Autocad_addin.Framework
         public int Order { get; set; } = 0;
         public string Icon { get; set; }
         public string LargeIcon { get; set; }
-
+        public string Namespace { get; set; }   // ⬅️ THÊM
         public RibbonDropDownAttribute(string tab, string panel, string text)
         {
             Tab = tab; Panel = panel; Text = text;
@@ -53,6 +59,7 @@ namespace Autocad_addin.Framework
     {
         public string Parent { get; }          // Tên nút cha (khớp Text của RibbonDropDown)
         public string Text { get; }
+        public string Namespace { get; set; }   // ⬅️ THÊM
         public string ToolTip { get; set; }
         public int Order { get; set; } = 0;
         public string Icon { get; set; }       // 16×16 cho item con
