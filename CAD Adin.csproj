@@ -112,19 +112,33 @@
     <Compile Include="Addin\Block\Code Block\Code\Equalize.cs" />
     <Compile Include="Addin\Dim\Button Dim.cs" />
     <Compile Include="Addin\Dim\Code\AutoDimPlates.cs" />
+    <Compile Include="Addin\Dim\Code\DimChangeStyleWrite.cs" />
+    <Compile Include="Addin\Dim\Code\DimDelete V2.cs" />
     <Compile Include="Addin\Dim\Code\DimScaleStyleNew.cs" />
     <Compile Include="Addin\Dim\Code\ScaleDimValue.cs" />
     <Compile Include="Addin\Dim\Code\ScaleDimValueBlock.cs" />
-    <Compile Include="Addin\Khac\Button_3D.cs" />
+    <Compile Include="Addin\Khac\Button Khac.cs" />
+    <Compile Include="Addin\Khac\Button_mẫu tỏ xuống.cs" />
+    <Compile Include="Addin\Khac\Code\Tinh_dien_tich_hinh_hoc.cs" />
+    <Compile Include="Addin\Layer\Button Layer.cs" />
+    <Compile Include="Addin\Layer\Code\LayerChangeReplateLine.cs" />
+    <Compile Include="Addin\Layer\Code\LineTypeToLayer.cs" />
+    <Compile Include="Addin\Layer\Code\Thay_layer_bang_phim_tat.cs" />
     <Compile Include="Addin\Lenh ve\Button_LenhVe.cs" />
+    <Compile Include="Addin\Lenh ve\Code\ScaleLine.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Button Text.cs" />
+    <Compile Include="Addin\Lenh ve\Code\DeleteLineByLt.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\DeleteTextAndLeader.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\FontChangeAllTimeNewRoman.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\TextFillNone.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\TextReplace.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\ThemChuVaoText.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\Uclv.cs" />
+    <Compile Include="Addin\Text, cac lenh voi centerline\Code\XoaChuTrongText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Addin\Khac\Code\" />
-    <Folder Include="Addin\Layer\Code\" />
-    <Folder Include="Addin\Lenh ve\Code\" />
     <Folder Include="Addin\Skill\Code\" />
-    <Folder Include="Addin\Text, cac lenh voi centerline\Code\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Addin\Block\Code Block\bỏ\All in one.lsp" />
@@ -187,14 +201,14 @@
     <None Include="Lisp\lisp\file gồm cả dcl\Layerdelete.lsp" />
     <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp theo đường dẫn.lsp" />
     <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp.lsp" />
-    <None Include="Addin\Text, cac lenh voi centerline\Lisp\Delete Centerline, mark.lsp" />
+    <None Include="Addin\Lenh ve\Lisp\Delete Centerline, mark.lsp" />
     <None Include="Addin\Text, cac lenh voi centerline\Lisp\Delete text, leader note.lsp" />
-    <None Include="Addin\Dim\Lisp\DIM CHANGE STYLE WRITE.lsp" />
-    <None Include="Addin\Dim\Lisp\dimdelete V2.lsp" />
-    <None Include="Addin\Dim\Lisp\AUTODIMPLATE.lsp" />
-    <None Include="Addin\Dim\Lisp\New_dim_scale_style.lsp" />
-    <None Include="Addin\Dim\Lisp\Scaledimvalue.lsp" />
-    <None Include="Addin\Dim\Lisp\Scale_dim_value_Block.lsp" />
+    <None Include="Addin\Dim\Lisp\2. DIM CHANGE STYLE WRITE.lsp" />
+    <None Include="Addin\Dim\Lisp\3. dimdelete V2.lsp" />
+    <None Include="Addin\Dim\Lisp\1. AUTODIMPLATE.lsp" />
+    <None Include="Addin\Dim\Lisp\4. New_dim_scale_style.lsp" />
+    <None Include="Addin\Dim\Lisp\6. Scaledimvalue.lsp" />
+    <None Include="Addin\Dim\Lisp\5. Scale_dim_value_Block.lsp" />
     <None Include="Addin\Skill\Lisp\file gồm cả dcl\changelayer.dcl" />
     <None Include="Addin\Skill\Lisp\file gồm cả dcl\changelayer.lsp" />
     <None Include="Addin\Skill\Lisp\file gồm cả dcl\dimdelete.dcl" />
@@ -220,7 +234,7 @@
     <None Include="Addin\Layer\Lisp\Thay_layer_bang_phim_tat.lsp" />
     <None Include="Addin\Text, cac lenh voi centerline\Lisp\them chu vao text.lsp" />
     <None Include="Addin\Khac\Lisp\Tinh_dien_tich_hinh_hoc.lsp" />
-    <None Include="Addin\Lenh ve\Lisp\To line type change layer line.lsp" />
+    <None Include="Addin\Layer\Lisp\To line type change layer line.lsp" />
     <None Include="Lisp\VV_TRICH_CHI_TIET_PHUC.VLX" />
     <None Include="Addin\Text, cac lenh voi centerline\Lisp\xoa chu trong text.lsp" />
   </ItemGroup>

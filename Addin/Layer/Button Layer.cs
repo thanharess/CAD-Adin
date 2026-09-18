@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 
 namespace Autocad_addin.Addin_Autocad.Button
 {
-    public static class Button_Line
+    public static class Button_Layer
     {
         // ===== Hàm gọi lệnh C# có sẵn =====
         private static void RunCommand(string commandName)
@@ -33,27 +33,28 @@ namespace Autocad_addin.Addin_Autocad.Button
             // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("DIMSCALESYLENEW");
         }
-       
-            //2
-            [RibbonButton("Tool CAD", "Line Tool", "Xoá Linetype",
-                ToolTip = "Xoá các line dựa theo linetype được chọn",
-                Size = RibbonItemSize.Standard,
-                Icon = "A1.png",
-                NewRow = true,
-                Order = 2)]
-            public static void DeleteLineByLt()
-            {
-                // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-                // còn nếu vẫn muốn dùng lệnh thì:
-                RunCommand("DeleteLineByLt");
+        //2
+        [RibbonButton("Tool CAD", "Layer Tool", "Thay đổi Linetype AM",
+            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void LayerChangeAM()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("LayerChangeAM");
 
 
-                // Thêm nút khác tương tự...
-                // [RibbonButton(...)]
-                // public static void TenNut()
-                // {
-                //     RunCommand("TENLENH");
-                // }
-            }
+
+
+            // Thêm nút khác tương tự...
+            // [RibbonButton(...)]
+            // public static void TenNut()
+            // {
+            //     RunCommand("TENLENH");
+            // }
+        }
     }
 }

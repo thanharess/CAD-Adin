@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 
 namespace Autocad_addin.Addin_Autocad.Button
 {
-    public static class Button_Dim
+    public static class Button_Text
     {
         // ===== Hàm gọi lệnh C# có sẵn =====
         private static void RunCommand(string commandName)
@@ -20,89 +20,105 @@ namespace Autocad_addin.Addin_Autocad.Button
         // CÁC NÚT GỌI LỆNH CÓ SẴN
         // =====================================================
 
-        [RibbonButton("Tool CAD", "Dim Tool", "Auto dim polyline",
-            ToolTip = "Tự động tạo DIMLINEAR cho từng cạnh của LWPOLYLINE.",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 1)]
-        public static void DIMAUTOPLATES()
-        {
-            RunCommand("DIMAUTOPLATES");          // ← tên CommandMethod
-        }
-
         //1
-        [RibbonButton("Tool CAD", "Dim Tool", "Tạo dim scale",
-            ToolTip = "Tạo DimStyle mới bằng cách copy từ style gốc đổi scale dim style",
+        [RibbonButton("Tool CAD", "Text Tool", "Xóa Text và Leader",
+            ToolTip = "Xóa text và leader",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void DIMSCALESYLENEW()
+        public static void DeleteTextAndLeader()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("DIMSCALESYLENEW");
+            RunCommand("DeleteTextAndLeader");
         }
         //2
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value Block",
-            ToolTip = "Scale giá trị của các DIM trong block",
+        [RibbonButton("Tool CAD", "Layer Tool", "Đổi thành chữ Time new roman",
+            ToolTip = "Chuyển toàn bộ Font chữ được chọn sang Times New Roman",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void SCALEDIMVALUEBLOCK()
+        public static void FontChangeAllTimeNewRoman()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("SCALEDIMVALUEBLOCK");
+            RunCommand("FontChangeAllTimeNewRoman");
         }
 
         //3
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value",
-            ToolTip = "Scale giá trị của các DIM",
+        [RibbonButton("Tool CAD", "Text Tool", "Tắt màu nền TXT",
+            ToolTip = "Tắt màu nền của text",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void SCALEDIMVALUE()
+        public static void TextFillNone()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("SCALEDIMVALUE");
+            RunCommand("TextFillNone");
         }
-
         //4
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Deletedim V2",
-            ToolTip = "Xóa dim nâng cao [1:Chọn / 2:Theo layer / 3:MLEADER / 4:Theo layer+vùng / 5:Tất cả] ",
+        [RibbonButton("Tool CAD", "Text Tool", "Copy dán text",
+            ToolTip = "Thay nội dung text được chọn theo text mẫu",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void Deletedim()
+        public static void TextReplace()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("Deletedim");
+            RunCommand("TextReplace");
         }
+
 
         //5
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Change Dim Style",
-            ToolTip = "Đổi Dim Style cho các DIM được chọn",
+        [RibbonButton("Tool CAD", "Text Tool", "Thêm chữ vào text",
+            ToolTip = "Thêm nội dung vào text được chọn",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void DIMCHANGESTYLEWRITE()
+        public static void ThemChuVaoText()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("DIMCHANGESTYLEWRITE");
+            RunCommand("ThemChuVaoText");
         }
+
+
+        //6
+        [RibbonButton("Tool CAD", "Text Tool", "Đổi chữ hoa/thường",
+            ToolTip = "Đổi giữa chữ hoa và chữ thường trong text được chọn",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void Doichuinhoa()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("Doichuinhoa");
+        }
+
+        //7
+        [RibbonButton("Tool CAD", "Text Tool", "Xóa chữ trong text",
+            ToolTip = "Xóa nội dung trong text được ghi",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void XoaChuTrongText()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("XoaChuTrongText");
+        }
+
+
 
 
 
@@ -112,5 +128,6 @@ namespace Autocad_addin.Addin_Autocad.Button
         // {
         //     RunCommand("TENLENH");
         // }
+
     }
 }
