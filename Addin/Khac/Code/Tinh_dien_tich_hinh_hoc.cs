@@ -62,11 +62,11 @@ namespace AreaTools
                 // Tạo bảng
                 Table table = new Table();
                 table.TableStyle = db.Tablestyle;
-                table.SetSize(2, 2);          // header + 1 row tiêu đề
-                table.SetRowHeight(0, 8);
-                table.SetRowHeight(1, 6);
-                table.SetColumnWidth(0, 25);
-                table.SetColumnWidth(1, 35);
+                table.SetSize(2, 2);              // header + 1 row tiêu đề
+                table.Rows[0].Height = 8;         // ← SỬA
+                table.Rows[1].Height = 6;         // ← SỬA
+                table.Columns[0].Width = 25;      // ← SỬA
+                table.Columns[1].Width = 35;      // ← SỬA
 
                 table.Position = tablePoint;
 
