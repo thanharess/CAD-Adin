@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage
+    SchemaVersion="1.0"
+    AppVersion="1.0.0"
+    ProductCode="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+    Name="Tool CAD"
+    Description="Tool CAD - Plugin AutoCAD"
+    Author="Your Name"
+    HelpFile="./Contents/Help/readme.html"
+    Icon="./Contents/Windows/Image/A1.png">
+
+	<CompanyDetails
+		Name="Your Company"
+		Url="https://example.com"
+		Email="you@example.com" />
+
+	<!-- Hỗ trợ AutoCAD 2020 trở lên (R23.1+), 64-bit -->
+	<RuntimeRequirements
+		OS="Win64"
+		Platform="AutoCAD*"
+		SeriesMin="R24.0"
+		SeriesMax="R99.0" />
+
+	<Components Description="Tool CAD Components">
+
+		<RuntimeRequirements
+			OS="Win64"
+			Platform="AutoCAD*"
+			SeriesMin="R24.0"
+			SeriesMax="R99.0" />
+
+		<!-- DLL chính chứa Ribbon + Button -->
+		<ComponentEntry
+			AppName="Autocad_addin"
+			ModuleName="./Contents/Windows/Autocad_addin.dll"
+			AppDescription="Tool CAD - Ribbon UI"
+			LoadOnAutoCADStartup="True"
+			LoadOnCommandInvocation="False"
+			LoadOnAppearance="False">
+		</ComponentEntry>
+
+		<!-- DLL thứ 2 chứa CommandMethod (nếu tách riêng) -->
+		<ComponentEntry
+			AppName="BlockTools"
+			ModuleName="./Contents/Windows/BlockTools.dll"
+			AppDescription="Tool CAD - Block/Text/Dim commands"
+			LoadOnAutoCADStartup="True"
+			LoadOnCommandInvocation="False"
+			LoadOnAppearance="False">
+		</ComponentEntry>
+
+	</Components>
+</ApplicationPackage>

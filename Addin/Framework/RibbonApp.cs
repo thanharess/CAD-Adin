@@ -55,19 +55,29 @@ namespace Autocad_addin.Framework
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
-
             if (!System.IO.Directory.Exists(_lispFolder)) return;
 
-            var files = System.IO.Directory.GetFiles(_lispFolder, "*.lsp",
+            // ✅ Load cả .lsp VÀ .vlx
+            var lspFiles = System.IO.Directory.GetFiles(_lispFolder, "*.lsp",
+                System.IO.SearchOption.AllDirectories);
+            var vlxFiles = System.IO.Directory.GetFiles(_lispFolder, "*.vlx",
                 System.IO.SearchOption.AllDirectories);
 
-            foreach (var f in files)
+            foreach (var f in lspFiles)
             {
                 string path = f.Replace("\\", "/");
                 doc.SendStringToExecute($"(load \"{path}\") ", true, false, false);
             }
 
-            doc.Editor.WriteMessage($"\n[Plugin] Đã load {files.Length} file LISP vào drawing hiện tại.");
+            // ✅ VLX load bằng lệnh APPLOAD (không phải load)
+            foreach (var f in vlxFiles)
+            {
+                string path = f.Replace("\\", "/");
+                doc.SendStringToExecute($"(command \"_.APPLOAD\" \"{path}\") ", true, false, false);
+            }
+
+            doc.Editor.WriteMessage(
+                $"\n[Plugin] Đã load {lspFiles.Length} LSP + {vlxFiles.Length} VLX.");
         }
     }
 }

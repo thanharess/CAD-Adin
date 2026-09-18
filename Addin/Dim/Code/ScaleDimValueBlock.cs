@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace BlockTools
+namespace Dimtools
 {
     public class ScaleDimValueBlock
     {

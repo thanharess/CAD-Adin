@@ -105,6 +105,42 @@ namespace Autocad_addin.Addin_Autocad.Button
         }
 
 
+        //5
+
+        [RibbonButton("Tool CAD", "Dim Tool", "DimDelete Auto",
+            ToolTip = "Xóa DIMENSION",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void DimDelete()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("DimDelete");
+        }
+
+        //5
+
+        [RibbonButton("Tool CAD", "Dim Tool", "DimTextStyle",
+            ToolTip = "Đổi TextStyle cho các DIM được chọn",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void DimTextStyle()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("DimTextStyle");
+        }
+
+
+
+
+
+
+
 
         // Thêm nút khác tương tự...
         // [RibbonButton(...)]

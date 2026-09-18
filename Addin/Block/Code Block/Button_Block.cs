@@ -2,7 +2,7 @@
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 
-namespace Autocad_addin.Addin_Autocad.Button
+namespace CADAddin.Block
 {
     public static class Button_Block
     {
@@ -23,7 +23,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 1)]
         public static void BlockBasePoint()
         {
@@ -35,7 +35,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 2)]
         public static void BLCOUNT()
         {
@@ -47,7 +47,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 3)]
         public static void BLDELETE()
         {
@@ -59,7 +59,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 4)]
         public static void BLEXPLODE()
         {
@@ -83,7 +83,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 6)]
         public static void LAYERCHANGEBLOCK()
         {
@@ -95,7 +95,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 7)]
         public static void BLRENAME()
         {
@@ -107,7 +107,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 8)]
         public static void BLREPLACE()
         {
@@ -119,7 +119,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 9)]
         public static void BLSAVEASNEWBLOCK()
         {
@@ -131,7 +131,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 10)]
         public static void BLSWAP()
         {
@@ -143,7 +143,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "BlockTools",
+            Namespace = "Block",
             Order = 11)]
         public static void BLchangeallunitmm()
         {

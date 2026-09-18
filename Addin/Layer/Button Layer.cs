@@ -45,16 +45,55 @@ namespace Autocad_addin.Addin_Autocad.Button
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("LayerChangeAM");
-
-
-
-
-            // Thêm nút khác tương tự...
-            // [RibbonButton(...)]
-            // public static void TenNut()
-            // {
-            //     RunCommand("TENLENH");
-            // }
         }
+
+
+        //3
+
+        [RibbonButton("Tool CAD", "Layer Tool", "Change Layer",
+            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void ChangeLayer()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("ChangeLayer");
+
+
+        }
+
+
+        //3
+
+        [RibbonButton("Tool CAD", "Layer Tool", "Delete Layer",
+            ToolTip = "Xóa layer",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void LayerDelete()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("LayerDelete");
+
+
+        }
+
+
+
+
+
+        // Thêm nút khác tương tự...
+        // [RibbonButton(...)]
+        // public static void TenNut()
+        // {
+        //     RunCommand("TENLENH");
+        // }
+
+
     }
-}
+    }

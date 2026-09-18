@@ -3,12 +3,11 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace BlockTools
+namespace CADAddin.Common              // ← ĐỔI THÀNH
 {
     public static class Utils
     {
         public static Editor Ed => AcApp.DocumentManager.MdiActiveDocument?.Editor;
-
         public static void Print(string msg) => Ed?.WriteMessage("\n" + msg);
 
         public static bool IsBlockReference(Transaction tr, ObjectId id, out BlockReference br)
