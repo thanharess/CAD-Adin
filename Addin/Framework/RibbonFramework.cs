@@ -1,14 +1,8 @@
 ﻿using Autodesk.Windows;
 using System;
-using System.Reflection;
-using System.Windows.Input;
 
 namespace CADAddin.Framework
-
 {
-    // ============================================================
-    // ATTRIBUTE 1: Nút thường (đã có)
-    // ============================================================
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class RibbonButtonAttribute : Attribute
     {
@@ -21,11 +15,8 @@ namespace CADAddin.Framework
         public string Icon { get; set; }
         public string LargeIcon { get; set; }
         public bool NewRow { get; set; } = false;
-        public bool HasDialogLauncher { get; set; } = false;
-        public string DialogCommand { get; set; }
-
-        // ⬇️ THÊM NAMESPACE
-        public string Namespace { get; set; }   // Nhóm LISP (Block, Layer, Text...)
+        public string Namespace { get; set; }
+        public int RowsPerColumn { get; set; } = 3;         // ← BẮT BUỘC
 
         public RibbonButtonAttribute(string tab, string panel, string text)
         {
@@ -33,9 +24,6 @@ namespace CADAddin.Framework
         }
     }
 
-    // ============================================================
-    // ATTRIBUTE 2: Nút Dropdown (SplitButton)
-    // ============================================================
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class RibbonDropDownAttribute : Attribute
     {
@@ -47,36 +35,28 @@ namespace CADAddin.Framework
         public int Order { get; set; } = 0;
         public string Icon { get; set; }
         public string LargeIcon { get; set; }
-        public string Namespace { get; set; }   // ⬅️ THÊM
+        public string Namespace { get; set; }
+        public int RowsPerColumn { get; set; } = 3;         // ← BẮT BUỘC
+
         public RibbonDropDownAttribute(string tab, string panel, string text)
         {
             Tab = tab; Panel = panel; Text = text;
         }
     }
 
-    // ============================================================
-    // ATTRIBUTE 3: Item con trong Dropdown
-    // ============================================================
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class RibbonDropItemAttribute : Attribute
     {
-        public string Parent { get; }          // Tên nút cha (khớp Text của RibbonDropDown)
+        public string Parent { get; }
         public string Text { get; }
-        public string Namespace { get; set; }   // ⬅️ THÊM
+        public string Namespace { get; set; }
         public string ToolTip { get; set; }
         public int Order { get; set; } = 0;
-        public string Icon { get; set; }       // 16×16 cho item con
+        public string Icon { get; set; }
 
         public RibbonDropItemAttribute(string parent, string text)
         {
             Parent = parent; Text = text;
         }
     }
-
-    // ============================================================
-    // COMMAND HANDLER (giữ nguyên)
-    // ============================================================
-
 }
-    
-

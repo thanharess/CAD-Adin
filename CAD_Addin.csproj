@@ -7,8 +7,8 @@
     <ProjectGuid>{03C8C13D-AF9D-4A57-A55E-1897AC47FCC8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CAD_Adin</RootNamespace>
-    <AssemblyName>CAD Adin</AssemblyName>
+    <RootNamespace>CAD_Addin</RootNamespace>
+    <AssemblyName>CAD_Addin</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -68,16 +68,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\accoremgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\accoremgd.dll</HintPath>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acdbmgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acdbmgd.dll</HintPath>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acmgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acmgd.dll</HintPath>
     </Reference>
     <Reference Include="AdWindows">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\AdWindows.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\AdWindows.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -122,7 +122,6 @@
     <Compile Include="Addin\Dim\Code\ScaleDimValue.cs" />
     <Compile Include="Addin\Dim\Code\ScaleDimValueBlock.cs" />
     <Compile Include="Addin\Khac\Button Khac.cs" />
-    <Compile Include="Addin\Khac\Button_mẫu tỏ xuống.cs" />
     <Compile Include="Addin\Khac\Button_VLX.cs" />
     <Compile Include="Addin\Khac\Code\Tinh_dien_tich_hinh_hoc.cs" />
     <Compile Include="Addin\Layer\Button Layer.cs" />

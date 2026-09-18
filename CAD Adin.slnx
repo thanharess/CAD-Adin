@@ -4,7 +4,8 @@
     <Platform Name="ARM64" />
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="CAD Adin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8">
+  <Project Path="CAD_Addin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8">
+    <BuildType Solution="Debug|x64" Project="Release" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="Debug|ARM64" Project="x64" />
     <Platform Solution="Release|ARM64" Project="ARM64" />

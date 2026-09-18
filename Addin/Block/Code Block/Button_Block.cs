@@ -1,5 +1,5 @@
-﻿using CADAddin.Common;                    // ← THÊM để gọi Utils (nếu cần)
-using CADAddin.Framework;                 // ← THÊM để dùng RibbonButton
+﻿using CADAddin.Common;
+using CADAddin.Framework;
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 
@@ -7,7 +7,15 @@ namespace CADAddin.Block
 {
     public static class Button_Block
     {
-        // ===== Hàm gọi lệnh C# có sẵn =====
+        // ═══════════════════════════════════════════════════════════
+        // ICON — ĐỔI TẠI ĐÂY
+        // ═══════════════════════════════════════════════════════════
+        private const string ICON_SMALL = "A1.png";   // 16×16 cho item con
+        private const string ICON_LARGE = "A2.png";   // 32×32 cho nút DropDown cha
+
+        // ═══════════════════════════════════════════════════════════
+        // HÀM GỌI LỆNH
+        // ═══════════════════════════════════════════════════════════
         private static void RunCommand(string commandName)
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
@@ -15,138 +23,135 @@ namespace CADAddin.Block
             doc.SendStringToExecute(commandName + " ", true, false, false);
         }
 
-        // =====================================================
-        // CÁC NÚT
-        // =====================================================
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 1: BLOCK INFO — Xem thông tin block
+        // ═══════════════════════════════════════════════════════════
 
-        [RibbonButton("Tool CAD", "Block Tool", "Block Base Point",
-            ToolTip = "Thay đổi điểm gốc của block",
+        [RibbonDropDown("Tool CAD", "Block Tool", "Block Info",
+            ToolTip = "Xem thông tin block",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
             Order = 1)]
-        public static void BlockBasePoint()
+        public static void BlockInfoDD()
         {
-            RunCommand("BMBASEPOINT");
+            RunCommand("BLCOUNT");   // bấm trực tiếp nút cha → chạy BLCOUNT
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Đếm block",
+        [RibbonDropItem("Block Info", "Đếm block",
             ToolTip = "Đếm số lần xuất hiện của block",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 2)]
-        public static void BLCOUNT()
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Info_BLCOUNT()
         {
             RunCommand("BLCOUNT");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Xóa Block",
-            ToolTip = "Xóa các block có cùng tên",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 3)]
-        public static void BLDELETE()
-        {
-            RunCommand("BLDELETE");
-        }
-
-        [RibbonButton("Tool CAD", "Block Tool", "Phá block",
-            ToolTip = "Phá các block trong model có cùng tên",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 4)]
-        public static void BLEXPLODE()
-        {
-            RunCommand("BLEXPLODE");
-        }
-
-        [RibbonButton("Tool CAD", "Block Tool", "Block Highlight",
+        [RibbonDropItem("Block Info", "Block Highlight",
             ToolTip = "Highlight tất cả block cùng tên",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 5)]
-        public static void BLHLAYER()
+            Icon = ICON_SMALL, Order = 2)]
+        public static void Info_BLHLAYER()
         {
             RunCommand("BLHLAYER");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Change Layer Block",
-            ToolTip = "Change layer of all blocks with the same name",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 6)]
-        public static void LAYERCHANGEBLOCK()
+        [RibbonDropItem("Block Info", "Change Layer Block",
+            ToolTip = "Đổi layer của block cùng tên",
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Info_LAYERCHANGEBLOCK()
         {
             RunCommand("LAYERCHANGEBLOCK");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Thay tên block",
-            ToolTip = "Đổi tên block",
+        [RibbonDropItem("Block Info", "Block Base Point",
+            ToolTip = "Thay đổi điểm gốc của block",
+            Icon = ICON_SMALL, Order = 4)]
+        public static void Info_BMBASEPOINT()
+        {
+            RunCommand("BMBASEPOINT");
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 2: BLOCK EDIT — Chỉnh sửa block
+        // ═══════════════════════════════════════════════════════════
+
+        [RibbonDropDown("Tool CAD", "Block Tool", "Block Edit",
+            ToolTip = "Chỉnh sửa block",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 7)]
-        public static void BLRENAME()
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            Order = 2)]
+        public static void BlockEditDD()
+        {
+            RunCommand("BLRENAME");   // mặc định
+        }
+
+        [RibbonDropItem("Block Edit", "Xóa Block",
+            ToolTip = "Xóa các block có cùng tên",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Edit_BLDELETE()
+        {
+            RunCommand("BLDELETE");
+        }
+
+        [RibbonDropItem("Block Edit", "Phá block",
+            ToolTip = "Phá các block trong model có cùng tên",
+            Icon = ICON_SMALL, Order = 2)]
+        public static void Edit_BLEXPLODE()
+        {
+            RunCommand("BLEXPLODE");
+        }
+
+        [RibbonDropItem("Block Edit", "Thay tên block",
+            ToolTip = "Đổi tên block",
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Edit_BLRENAME()
         {
             RunCommand("BLRENAME");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Replace block",
+        [RibbonDropItem("Block Edit", "Replace block",
             ToolTip = "Thay thế block",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 8)]
-        public static void BLREPLACE()
+            Icon = ICON_SMALL, Order = 4)]
+        public static void Edit_BLREPLACE()
         {
             RunCommand("BLREPLACE");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "SAVE AS NEW BLOCK",
-            ToolTip = "Lưu block hiện tại dưới tên mới",
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 3: BLOCK TOOLS — Công cụ khác
+        // ═══════════════════════════════════════════════════════════
+
+        [RibbonDropDown("Tool CAD", "Block Tool", "Block Tools",
+            ToolTip = "Công cụ block khác",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 9)]
-        public static void BLSAVEASNEWBLOCK()
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            Order = 3)]
+        public static void BlockToolsDD()
+        {
+            RunCommand("BLSAVEASNEWBLOCK");   // mặc định
+        }
+
+        [RibbonDropItem("Block Tools", "Save As New Block",
+            ToolTip = "Lưu block hiện tại dưới tên mới",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Tools_BLSAVEASNEWBLOCK()
         {
             RunCommand("BLSAVEASNEWBLOCK");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Đổi Block",
+        [RibbonDropItem("Block Tools", "Đổi Block",
             ToolTip = "Hoán đổi vị trí giữa hai block",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 10)]
-        public static void BLSWAP()
+            Icon = ICON_SMALL, Order = 2)]
+        public static void Tools_BLSWAP()
         {
             RunCommand("BLSWAP");
         }
 
-        [RibbonButton("Tool CAD", "Block Tool", "Change Units Block",
+        [RibbonDropItem("Block Tools", "Change Units Block",
             ToolTip = "Đổi tất cả đơn vị về mm",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Namespace = "Block",
-            Order = 11)]
-        public static void BLchangeallunitmm()
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Tools_BLchangeallunitmm()
         {
             RunCommand("BLchangeallunitmm");
         }

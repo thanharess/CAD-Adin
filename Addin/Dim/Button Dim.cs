@@ -1,5 +1,5 @@
-﻿using CADAddin.Common;                    // ← THÊM để gọi Utils (nếu cần)
-using CADAddin.Framework;                 // ← THÊM để dùng RibbonButton
+﻿using CADAddin.Common;
+using CADAddin.Framework;
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 
@@ -7,147 +7,129 @@ namespace CADAddin.Dim
 {
     public static class Button_Dim
     {
-        // ===== Hàm gọi lệnh C# có sẵn =====
+        // ═══════════════════════════════════════════════════════════
+        // ICON
+        // ═══════════════════════════════════════════════════════════
+        private const string ICON_SMALL = "A1.png";
+        private const string ICON_LARGE = "A2.png";
+
         private static void RunCommand(string commandName)
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
-
-            // Gọi lệnh đúng tên CommandMethod
             doc.SendStringToExecute(commandName + " ", true, false, false);
         }
 
-        // =====================================================
-        // CÁC NÚT GỌI LỆNH CÓ SẴN
-        // =====================================================
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 1: Dim Create
+        // ═══════════════════════════════════════════════════════════
 
-        [RibbonButton("Tool CAD", "Dim Tool", "Auto dim polyline",
-            ToolTip = "Tự động tạo DIMLINEAR cho từng cạnh của LWPOLYLINE.",
+        [RibbonDropDown("Tool CAD", "Dim Tool", "Dim Create",
+            ToolTip = "Tạo dim tự động",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            RowsPerColumn = 3,
             Order = 1)]
-        public static void DIMAUTOPLATES()
+        public static void DimCreateDD()
         {
-            RunCommand("DIMAUTOPLATES");          // ← tên CommandMethod
+            RunCommand("DIMAUTOPLATES");
         }
 
-        //1
-        [RibbonButton("Tool CAD", "Dim Tool", "Tạo dim scale",
-            ToolTip = "Tạo DimStyle mới bằng cách copy từ style gốc đổi scale dim style",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void DIMSCALESYLENEW()
+        [RibbonDropItem("Dim Create", "Auto Dim Polyline",
+            ToolTip = "Tự động tạo DIMLINEAR cho từng cạnh LWPOLYLINE",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Create_DIMAUTOPLATES()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("DIMAUTOPLATES");
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 2: Dim Scale
+        // ═══════════════════════════════════════════════════════════
+
+        [RibbonDropDown("Tool CAD", "Dim Tool", "Dim Scale",
+            ToolTip = "Scale giá trị dim và dimstyle",
+            Size = RibbonItemSize.Standard,
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            RowsPerColumn = 3,
+            Order = 2)]
+        public static void DimScaleDD()
+        {
             RunCommand("DIMSCALESYLENEW");
         }
-        //2
 
-        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value Block",
-            ToolTip = "Scale giá trị của các DIM trong block",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void SCALEDIMVALUEBLOCK()
+        [RibbonDropItem("Dim Scale", "Tạo Dim Scale",
+            ToolTip = "Tạo DimStyle mới bằng cách copy từ style gốc và đổi scale",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Scale_DIMSCALESYLENEW()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("DIMSCALESYLENEW");
+        }
+
+        [RibbonDropItem("Dim Scale", "Scale Dim Value Block",
+            ToolTip = "Scale giá trị DIM trong block",
+            Icon = ICON_SMALL   , Order = 2)]
+        public static void Scale_SCALEDIMVALUEBLOCK()
+        {
             RunCommand("SCALEDIMVALUEBLOCK");
         }
 
-        //3
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value",
-            ToolTip = "Scale giá trị của các DIM",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void SCALEDIMVALUE()
+        [RibbonDropItem("Dim Scale", "Scale Dim Value",
+            ToolTip = "Scale giá trị các DIM được chọn",
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Scale_SCALEDIMVALUE()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("SCALEDIMVALUE");
         }
 
-        //4
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 3: Dim Edit
+        // ═══════════════════════════════════════════════════════════
 
-        [RibbonButton("Tool CAD", "Dim Tool", "Deletedim V2",
-            ToolTip = "Xóa dim nâng cao [1:Chọn / 2:Theo layer / 3:MLEADER / 4:Theo layer+vùng / 5:Tất cả] ",
+        [RibbonDropDown("Tool CAD", "Dim Tool", "Dim Edit",
+            ToolTip = "Chỉnh sửa và xóa dim",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void Deletedim()
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            RowsPerColumn = 3,
+            Order = 3)]
+        public static void DimEditDD()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("Deletedim");
-        }
-
-        //5
-
-        [RibbonButton("Tool CAD", "Dim Tool", "Change Dim Style",
-            ToolTip = "Đổi Dim Style cho các DIM được chọn",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void DIMCHANGESTYLEWRITE()
-        {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("DIMCHANGESTYLEWRITE");
         }
 
-
-        //5
-
-        [RibbonButton("Tool CAD", "Dim Tool", "DimDelete Auto",
-            ToolTip = "Xóa DIMENSION",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void DimDelete()
+        [RibbonDropItem("Dim Edit", "Change Dim Style",
+            ToolTip = "Đổi Dim Style cho các DIM được chọn",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Edit_DIMCHANGESTYLEWRITE()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("DimDelete");
+            RunCommand("DIMCHANGESTYLEWRITE");
         }
 
-        //5
-
-        [RibbonButton("Tool CAD", "Dim Tool", "DimTextStyle",
+        [RibbonDropItem("Dim Edit", "Dim Text Style",
             ToolTip = "Đổi TextStyle cho các DIM được chọn",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void DimTextStyle()
+            Icon = ICON_SMALL, Order = 2)]
+        public static void Edit_DimTextStyle()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("DimTextStyle");
         }
 
+        [RibbonDropItem("Dim Edit", "Delete Dim V2",
+            ToolTip = "Xóa dim nâng cao [1:Chọn / 2:Theo layer / 3:MLEADER / 4:Theo layer+vùng / 5:Tất cả]",
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Edit_Deletedim()
+        {
+            RunCommand("Deletedim");
+        }
 
-
-
-
-
-
-
-        // Thêm nút khác tương tự...
-        // [RibbonButton(...)]
-        // public static void TenNut()
-        // {
-        //     RunCommand("TENLENH");
-        // }
+        [RibbonDropItem("Dim Edit", "Delete Dim Auto",
+            ToolTip = "Xóa DIMENSION",
+            Icon = ICON_SMALL, Order = 4)]
+        public static void Edit_DimDelete()
+        {
+            RunCommand("DimDelete");
+        }
     }
 }

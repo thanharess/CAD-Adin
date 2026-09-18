@@ -78,23 +78,23 @@ namespace CADAddin.Framework
                     ribbon.Tabs.Add(tab);
                 }
 
-                // ===== 4. Duyệt Panel =====
+                // ─── 4. Duyệt Panel ───
                 foreach (var panelKv in tabKv.Value)
                 {
                     var src = new RibbonPanelSource { Title = panelKv.Key };
 
-                    // Sort theo Order
                     var list = panelKv.Value;
                     list.Sort((a, b) => GetOrder(a).CompareTo(GetOrder(b)));
 
-                    // Chia cột - tối đa 3 hàng/cột
-                    const int MaxRows = 3;
+                    // ✅ Lấy RowsPerColumn từ item đầu panel
+                    int maxRows = GetRowsPerColumn(list[0]);
+
                     RibbonRowPanel currentCol = new RibbonRowPanel();
                     int countInCol = 0;
 
                     foreach (var obj in list)
                     {
-                        if (countInCol >= MaxRows)
+                        if (countInCol >= maxRows)
                         {
                             src.Items.Add(currentCol);
                             currentCol = new RibbonRowPanel();
@@ -103,7 +103,6 @@ namespace CADAddin.Framework
                         if (countInCol > 0)
                             currentCol.Items.Add(new RibbonRowBreak());
 
-                        // Tạo nút/ dropdown
                         if (obj is KeyValuePair<MethodInfo, RibbonButtonAttribute> nb)
                             currentCol.Items.Add(CreateButton(nb.Key, nb.Value));
                         else if (obj is KeyValuePair<MethodInfo, RibbonDropDownAttribute> dd)
@@ -170,12 +169,12 @@ namespace CADAddin.Framework
         }
 
         private RibbonSplitButton CreateDropDown(MethodInfo m,
-     RibbonDropDownAttribute a,
-     List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>> allItems)
+    RibbonDropDownAttribute a,
+    List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>> allItems)
         {
-            // ============================================================
-            // 1. TẠO NÚT CHÍNH (SplitButton)
-            // ============================================================
+            // ═══════════════════════════════════════════════════════════
+            // SPLITBUTTON — Nút cha + mũi tên
+            // ═══════════════════════════════════════════════════════════
             var split = new RibbonSplitButton
             {
                 Text = a.Text,
@@ -183,16 +182,32 @@ namespace CADAddin.Framework
                 ShowImage = true,
                 ToolTip = a.ToolTip,
                 Size = a.Size,
-                IsSplit = false,
-                // ⚠️ KHÔNG set ListStyle (gây lỗi IconText/ListItem)
-                // ⚠️ KHÔNG set ListImageSize (enum không tồn tại)
+                IsSplit = true,
                 CommandHandler = new RibbonCommandHandler(),
-                CommandParameter = m.Name + " "
+                CommandParameter = m.Name
             };
 
-            // ============================================================
-            // 2. NÚT CHA "Box" — chỉ set Current, KHÔNG add vào Items
-            // ============================================================
+            // ✅ Set Orientation Vertical cho Large
+            if (a.Size == RibbonItemSize.Large)
+            {
+                split.Orientation = System.Windows.Controls.Orientation.Vertical;
+                // KHÔNG set Height
+            }
+            else
+            {
+                split.Height = 24;
+            }
+
+            // ✅ Load ảnh đúng kích thước
+            var smallImg = LoadImage(a.Icon, 16);
+            var largeImg = LoadImage(a.LargeIcon ?? a.Icon, 32);
+
+            if (smallImg != null) split.Image = smallImg;
+            if (largeImg != null) split.LargeImage = largeImg;
+
+            // ═══════════════════════════════════════════════════════════
+            // NÚT CHA — Phần chính của SplitButton (bấm để chạy lệnh)
+            // ═══════════════════════════════════════════════════════════
             var parentBtn = new RibbonButton
             {
                 Text = a.Text,
@@ -201,23 +216,28 @@ namespace CADAddin.Framework
                 ToolTip = a.ToolTip,
                 Size = a.Size,
                 CommandHandler = new RibbonCommandHandler(),
-                CommandParameter = m.Name + " "
+                CommandParameter = m.Name
             };
 
-            // ⬇️ CHỈ set Height cho nút Standard
-            if (a.Size == RibbonItemSize.Standard)
+            // ✅ Nút cha PHẢI cùng cấu hình như SplitButton
+            if (a.Size == RibbonItemSize.Large)
+            {
+                parentBtn.Orientation = System.Windows.Controls.Orientation.Vertical;
+                // KHÔNG set Height
+            }
+            else
+            {
                 parentBtn.Height = 24;
+            }
 
-            var pImg = LoadImage(a.Icon, 16);
-            if (pImg != null) parentBtn.Image = pImg;
-
-            var pLargeImg = LoadImage(a.LargeIcon ?? a.Icon, 32);
-            if (pLargeImg != null) parentBtn.LargeImage = pLargeImg;
+            if (smallImg != null) parentBtn.Image = smallImg;
+            if (largeImg != null) parentBtn.LargeImage = largeImg;
 
             split.Current = parentBtn;
-            // ============================================================
-            // 3. LỌC CÁC ITEM CON CÓ Parent KHỚP
-            // ============================================================
+
+            // ═══════════════════════════════════════════════════════════
+            // ITEM CON — Danh sách dropdown (luôn Standard)
+            // ═══════════════════════════════════════════════════════════
             var children = new List<KeyValuePair<MethodInfo, RibbonDropItemAttribute>>();
             foreach (var it in allItems)
             {
@@ -226,9 +246,6 @@ namespace CADAddin.Framework
             }
             children.Sort((x, y) => x.Value.Order.CompareTo(y.Value.Order));
 
-            // ============================================================
-            // 4. TẠO TỪNG ITEM CON + GÁN ẢNH
-            // ============================================================
             foreach (var c in children)
             {
                 var childBtn = new RibbonButton
@@ -238,25 +255,34 @@ namespace CADAddin.Framework
                     ShowImage = true,
                     ToolTip = c.Value.ToolTip,
                     CommandHandler = new RibbonCommandHandler(),
-                    CommandParameter = c.Key.Name + " ",
+                    CommandParameter = c.Key.Name,
                     Size = RibbonItemSize.Standard
                 };
 
-                // Ảnh nhỏ (16×16) cho item trong dropdown
-                // Item con trong dropdown = 16×16
+                // Ảnh cho item con — 16×16
                 var ci = LoadImage(c.Value.Icon, 16);
                 if (ci != null)
                 {
                     childBtn.Image = ci;
                     childBtn.LargeImage = ci;
                 }
+
                 split.Items.Add(childBtn);
             }
 
             return split;
         }
+        private int GetRowsPerColumn(object obj)
+        {
+            if (obj is KeyValuePair<MethodInfo, RibbonButtonAttribute> nb)
+                return nb.Value.RowsPerColumn;
 
-        
+            if (obj is KeyValuePair<MethodInfo, RibbonDropDownAttribute> dd)
+                return dd.Value.RowsPerColumn;
+
+            return 3;
+        }
+
         // Load ảnh với kích thước mục tiêu (16 hoặc 32)
         private System.Windows.Media.ImageSource LoadImage(string iconName, int targetSize = 16)
         {

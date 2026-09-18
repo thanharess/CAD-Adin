@@ -1,5 +1,5 @@
-﻿using CADAddin.Common;                    // ← THÊM để gọi Utils (nếu cần)
-using CADAddin.Framework;                 // ← THÊM để dùng RibbonButton
+﻿using CADAddin.Common;
+using CADAddin.Framework;
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 
@@ -7,94 +7,81 @@ namespace CADAddin.Layer
 {
     public static class Button_Layer
     {
-        // ===== Hàm gọi lệnh C# có sẵn =====
+        // ═══════════════════════════════════════════════════════════
+        // ICON
+        // ═══════════════════════════════════════════════════════════
+        private const string ICON_SMALL = "A1.png";
+        private const string ICON_LARGE = "A2.png";
+
         private static void RunCommand(string commandName)
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
-
-            // Gọi lệnh đúng tên CommandMethod
             doc.SendStringToExecute(commandName + " ", true, false, false);
         }
 
-        // =====================================================
-        // CÁC NÚT GỌI LỆNH CÓ SẴN
-        // =====================================================
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 1: LAYER CHANGE — Đổi layer
+        // ═══════════════════════════════════════════════════════════
 
-        //1
-        [RibbonButton("Tool CAD", "Layer Tool", "Replace Layer line",
-            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
+        [RibbonDropDown("Tool CAD", "Layer Tool", "Layer Change",
+            ToolTip = "Đổi layer cho đối tượng",
             Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void DIMSCALESYLENEW()
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            RowsPerColumn = 3,
+            Order = 1)]
+        public static void LayerChangeDD()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("DIMSCALESYLENEW");
-        }
-        //2
-        [RibbonButton("Tool CAD", "Layer Tool", "Thay đổi Linetype AM",
-            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void LayerChangeAM()
-        {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("LayerChangeAM");
+            RunCommand("CHANGELAYER");
         }
 
-
-        //3
-
-        [RibbonButton("Tool CAD", "Layer Tool", "Change Layer",
-            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void ChangeLayer()
+        [RibbonDropItem("Layer Change", "Change Layer",
+            ToolTip = "Đổi layer cho đối tượng được chọn",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Change_ChangeLayer()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("ChangeLayer");
-
-
+            RunCommand("CHANGELAYER");
         }
 
-
-        //3
-
-        [RibbonButton("Tool CAD", "Layer Tool", "Delete Layer",
-            ToolTip = "Xóa layer",
-            Size = RibbonItemSize.Standard,
-            Icon = "A1.png",
-            NewRow = true,
-            Order = 2)]
-        public static void LayerDelete()
+        [RibbonDropItem("Layer Change", "Thay đổi Linetype AM",
+            ToolTip = "Chuyển line theo linetype sang layer khác",
+            Icon = ICON_SMALL, Order = 2)]
+        public static void Change_LayerChangeAM()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("LayerDelete");
-
-
+            RunCommand("LAYERCHANGEAM");
         }
 
+        [RibbonDropItem("Layer Change", "Replace Layer Line",
+            ToolTip = "Chuyển line từ layer này sang layer khác theo số thứ tự",
+            Icon = ICON_SMALL, Order = 3)]
+        public static void Change_ReplaceLine()
+        {
+            RunCommand("LAYERCHANGEREPLATELINE");
+        }
 
+        // ═══════════════════════════════════════════════════════════
+        // DROPDOWN 2: LAYER TOOLS — Xóa và công cụ
+        // ═══════════════════════════════════════════════════════════
 
+        [RibbonDropDown("Tool CAD", "Layer Tool", "Layer Tools",
+            ToolTip = "Xóa và quản lý layer",
+            Size = RibbonItemSize.Standard,
+            Icon = ICON_SMALL,
+            LargeIcon = ICON_LARGE,
+            RowsPerColumn = 3,
+            Order = 2)]
+        public static void LayerToolsDD()
+        {
+            RunCommand("LAYERDELETE");
+        }
 
-
-        // Thêm nút khác tương tự...
-        // [RibbonButton(...)]
-        // public static void TenNut()
-        // {
-        //     RunCommand("TENLENH");
-        // }
-
-
+        [RibbonDropItem("Layer Tools", "Delete Layer",
+            ToolTip = "Xóa layer khỏi bản vẽ",
+            Icon = ICON_SMALL, Order = 1)]
+        public static void Tools_LayerDelete()
+        {
+            RunCommand("LAYERDELETE");
+        }
     }
-    }
+}
