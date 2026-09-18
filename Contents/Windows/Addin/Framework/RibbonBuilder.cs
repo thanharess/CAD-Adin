@@ -286,33 +286,53 @@ namespace CADAddin.Framework
         // Load ảnh với kích thước mục tiêu (16 hoặc 32)
         private System.Windows.Media.ImageSource LoadImage(string iconName, int targetSize = 16)
         {
-            if (string.IsNullOrEmpty(iconName)) return null;
+            // ⚠️ Bọc TẤT CẢ trong try/catch — không bao giờ để crash
             try
             {
+                if (string.IsNullOrEmpty(iconName))
+                    return null;
+
                 string path = Path.Combine(_imageFolder, iconName);
-                if (!File.Exists(path)) return null;
+                if (!File.Exists(path))
+                {
+                    LogDebug($"Ảnh không tồn tại: {path}");
+                    return null;
+                }
 
-                // ===== 1. Load ảnh gốc =====
-                var src = new System.Windows.Media.Imaging.BitmapImage();
-                src.BeginInit();
-                src.UriSource = new Uri(path, UriKind.Absolute);
-                src.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                src.EndInit();
+                // ═══════════════════════════════════════════════════════════
+                // ✅ ĐỌC ẢNH QUA FileStream — an toàn hơn UriSource
+                // ═══════════════════════════════════════════════════════════
+                System.Windows.Media.Imaging.BitmapImage src;
 
-                // ===== 2. Tính toán tỉ lệ để FIT (không crop, không méo) =====
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    src = new System.Windows.Media.Imaging.BitmapImage();
+                    src.BeginInit();
+                    src.StreamSource = fs;
+                    src.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                    src.EndInit();
+                }
+
+                // ✅ Freeze ngay để thread-safe
+                src.Freeze();
+
+                // ═══════════════════════════════════════════════════════════
+                // ✅ SCALE ẢNH
+                // ═══════════════════════════════════════════════════════════
                 double srcW = src.PixelWidth;
                 double srcH = src.PixelHeight;
 
-                // Scale nhỏ hơn → Fit vào khung targetSize × targetSize
+                if (srcW <= 0 || srcH <= 0)
+                    return src;   // fallback
+
                 double scale = Math.Min(targetSize / srcW, targetSize / srcH);
                 double drawW = srcW * scale;
                 double drawH = srcH * scale;
 
-                // Căn giữa
                 double offsetX = (targetSize - drawW) / 2;
                 double offsetY = (targetSize - drawH) / 2;
 
-                // ===== 3. Vẽ ảnh đã scale vào bitmap mới =====
+                // ✅ Vẽ ảnh đã scale
                 var visual = new System.Windows.Media.DrawingVisual();
                 using (var dc = visual.RenderOpen())
                 {
@@ -320,6 +340,7 @@ namespace CADAddin.Framework
                     dc.DrawImage(src, destRect);
                 }
 
+                // ⚠️ RenderTargetBitmap CHỈ chạy trên STA thread (UI thread)
                 var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
                     targetSize, targetSize, 96, 96,
                     System.Windows.Media.PixelFormats.Pbgra32);
@@ -330,12 +351,22 @@ namespace CADAddin.Framework
             }
             catch (System.Exception ex)
             {
-                Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager
-                    .MdiActiveDocument?.Editor.WriteMessage($"\n[Plugin] Lỗi ảnh: {ex.Message}");
-                return null;
+                // ✅ Ghi log — KHÔNG crash
+                LogDebug($"Lỗi ảnh '{iconName}': {ex.Message}");
+                return null;   // ← Quan trọng: return null thay vì throw
             }
         }
 
+        // Helper log riêng cho RibbonBuilder
+        private static void LogDebug(string msg)
+        {
+            try
+            {
+                string logPath = Path.Combine(Path.GetTempPath(), "CADAddin_debug.log");
+                File.AppendAllText(logPath, $"[{DateTime.Now:HH:mm:ss}] [RibbonBuilder] {msg}\n");
+            }
+            catch { }
+        }
         private void LoadAllLisp()
         {
             if (!Directory.Exists(_lispFolder)) return;
