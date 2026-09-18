@@ -1,10 +1,12 @@
-﻿using Autocad_addin.Framework;
+﻿using CADAddin.Common;                    // ← THÊM để gọi Utils (nếu cần)
+using CADAddin.Framework;                 // ← THÊM để dùng RibbonButton
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 
-namespace Autocad_addin.Addin_Autocad.Button
+namespace CADAddin.Draw
+
 {
-    public static class Button_Line
+    public static class Button_Draw
     {
         // ===== Hàm gọi lệnh C# có sẵn =====
         private static void RunCommand(string commandName)

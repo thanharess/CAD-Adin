@@ -1,8 +1,9 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace BlockTools
+namespace CADAddin.Layer
 {
     public class QuickShortcuts
     {

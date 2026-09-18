@@ -1,10 +1,12 @@
 ﻿using System.IO;
 using System.Reflection;
-using Autocad_addin.Framework;
+using CADAddin.Framework;
 using Autodesk.Windows;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 using Autodesk.AutoCAD.ApplicationServices;
 
-namespace Autocad_addin.Addin_Autocad.Button
+namespace CADAddin.Khac
+
 {
     public static class Button_VLX
     {

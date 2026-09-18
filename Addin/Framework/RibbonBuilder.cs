@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace Autocad_addin.Framework
+namespace CADAddin.Framework
+
 {
     public class RibbonBuilder
     {

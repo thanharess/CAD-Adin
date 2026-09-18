@@ -1,8 +1,8 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
+﻿using CADAddin.Common;                    // ← THÊM để gọi Utils
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
-using System;
 
-namespace Autocad_addin.Framework
+namespace CADAddin.Framework               // ← ĐỔI THÀNH
 {
     public class RibbonApp : IExtensionApplication
     {

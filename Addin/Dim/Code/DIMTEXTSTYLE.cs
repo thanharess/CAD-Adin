@@ -7,11 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 
 using AcadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 
-namespace Dimtools
+namespace CADAddin.Dim
 {
     public class DimTextStyleCommands
     {

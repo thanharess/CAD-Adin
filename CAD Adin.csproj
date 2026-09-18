@@ -131,10 +131,10 @@
     <Compile Include="Addin\Layer\Code\LAYERDELETE.cs" />
     <Compile Include="Addin\Layer\Code\LineTypeToLayer.cs" />
     <Compile Include="Addin\Layer\Code\Thay_layer_bang_phim_tat.cs" />
-    <Compile Include="Addin\Lenh_ve\Button_LenhVe.cs" />
-    <Compile Include="Addin\Lenh_ve\Code\ScaleLine.cs" />
-    <Compile Include="Addin\Text\Button Text.cs" />
-    <Compile Include="Addin\Lenh_ve\Code\DeleteLineByLt.cs" />
+    <Compile Include="Addin\Draw\Button_Draw.cs" />
+    <Compile Include="Addin\Draw\Code\ScaleLine.cs" />
+    <Compile Include="Addin\Text\Button_Text.cs" />
+    <Compile Include="Addin\Draw\Code\DeleteLineByLt.cs" />
     <Compile Include="Addin\Text\Code\DeleteTextAndLeader.cs" />
     <Compile Include="Addin\Text\Code\FontChangeAllTimeNewRoman.cs" />
     <Compile Include="Addin\Text\Code\TextFillNone.cs" />
@@ -208,7 +208,7 @@
     <None Include="Lisp\lisp\file gồm cả dcl\Layerdelete.lsp" />
     <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp theo đường dẫn.lsp" />
     <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp.lsp" />
-    <None Include="Addin\Lenh_ve\Lisp\Delete Centerline, mark.lsp" />
+    <None Include="Addin\Draw\Lisp\Delete Centerline, mark.lsp" />
     <None Include="Addin\Text\Lisp\Delete text, leader note.lsp" />
     <None Include="Addin\Dim\Lisp\2. DIM CHANGE STYLE WRITE.lsp" />
     <None Include="Addin\Dim\Lisp\3. dimdelete V2.lsp" />
@@ -235,7 +235,7 @@
     <None Include="Lisp\Ko cần thiêt\Plot_PDF_auto - Copy.lsp" />
     <None Include="Lisp\Ko cần thiêt\Plot_PDF_auto.lsp" />
     <None Include="Addin\Text\Lisp\Replace_text.lsp" />
-    <None Include="Addin\Lenh_ve\Lisp\Scale_liner.lsp" />
+    <None Include="Addin\Draw\Lisp\Scale_liner.lsp" />
     <None Include="Addin\Text\Lisp\Text_fill_color_none.lsp" />
     <None Include="Addin\Text\Lisp\Thay font chu all style text V2.lsp" />
     <None Include="Addin\Layer\Lisp\Thay_layer_bang_phim_tat.lsp" />

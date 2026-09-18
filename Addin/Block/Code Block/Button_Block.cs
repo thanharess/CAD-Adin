@@ -1,4 +1,5 @@
-﻿using Autocad_addin.Framework;
+﻿using CADAddin.Common;                    // ← THÊM để gọi Utils (nếu cần)
+using CADAddin.Framework;                 // ← THÊM để dùng RibbonButton
 using Autodesk.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 

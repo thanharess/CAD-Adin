@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using AcadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 
-namespace Dimtools
+namespace CADAddin.Dim
 {
     public class DimDeleteCommands
     {

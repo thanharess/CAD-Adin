@@ -4,7 +4,8 @@ using System.Reflection;
 using System.Windows.Input;
 using Autodesk.AutoCAD.ApplicationServices;   // ← THÊM DÒNG NÀY
 
-namespace Autocad_addin.Framework
+namespace CADAddin.Framework
+
 {
     public class RibbonCommandHandler : ICommand
     {

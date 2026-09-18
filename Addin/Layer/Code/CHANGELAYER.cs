@@ -6,13 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 
 // Alias để tránh xung đột
 using AcadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
-[assembly: CommandClass(typeof(YourNamespace.ChangeLayerCommands))]
 
-namespace YourNamespace
+
+namespace CADAddin.Layer
 {
     public class ChangeLayerCommands
     {

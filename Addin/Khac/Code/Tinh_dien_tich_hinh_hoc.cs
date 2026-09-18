@@ -5,10 +5,12 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System;
 using System.Collections.Generic;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 
 
 
-namespace AreaTools
+namespace CADAddin.Khac
+
 {
     public class AreaLabel
     {

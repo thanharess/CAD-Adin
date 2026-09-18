@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
+using CADAddin.Common;                    // ← THÊM để gọi Utils
 
 namespace CADAddin.Block
 {

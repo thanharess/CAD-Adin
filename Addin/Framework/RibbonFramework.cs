@@ -3,7 +3,8 @@ using System;
 using System.Reflection;
 using System.Windows.Input;
 
-namespace Autocad_addin.Framework
+namespace CADAddin.Framework
+
 {
     // ============================================================
     // ATTRIBUTE 1: Nút thường (đã có)
