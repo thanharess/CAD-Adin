@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 
 namespace Autocad_addin.Addin_Autocad.Button
 {
-    public static class Button_Block
+    public static class Button_Dim
     {
         // ===== Hàm gọi lệnh C# có sẵn =====
         private static void RunCommand(string commandName)
@@ -20,62 +20,63 @@ namespace Autocad_addin.Addin_Autocad.Button
         // CÁC NÚT GỌI LỆNH CÓ SẴN
         // =====================================================
 
-        [RibbonButton("Tool CAD", "Block Tool", "Block Base Point",
-            ToolTip = "Thay đổi điểm gốc của block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Auto dim polyline",
+            ToolTip = "Tự động tạo DIMLINEAR cho từng cạnh của LWPOLYLINE.",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 1)]
-        public static void BlockBasePoint()
+        public static void DIMAUTOPLATES()
         {
-            RunCommand("BMBASEPOINT");          // ← tên CommandMethod
+            RunCommand("DIMAUTOPLATES");          // ← tên CommandMethod
         }
+
         //2
-        [RibbonButton("Tool CAD", "Block Tool", "Đếm block",
-            ToolTip = "Đếm số lần xuất hiện của block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Tạo dim scale",
+            ToolTip = "Tạo DimStyle mới bằng cách copy từ style gốc đổi scale dim style",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void BLCOUNT()
+        public static void DIMSCALESYLENEW()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("BLCOUNT");
+            RunCommand("DIMSCALESYLENEW");
         }
         //3
 
-        [RibbonButton("Tool CAD", "Block Tool", "Xóa Block",
-            ToolTip = "Xóa các block có cùng tên",
+        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value Block",
+            ToolTip = "Scale giá trị của các DIM trong block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void BLDELETE()
+        public static void SCALEDIMVALUEBLOCK()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("BLDELETE");
+            RunCommand("SCALEDIMVALUEBLOCK");
         }
 
-        //6
+        //4
 
-        [RibbonButton("Tool CAD", "Block Tool", "Phá block",
-            ToolTip = "Phá các block trong model có cùng tên",
+        [RibbonButton("Tool CAD", "Dim Tool", "Scale Dim Value",
+            ToolTip = "Scale giá trị của các DIM",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void BLEXPLODE()
+        public static void SCALEDIMVALUE()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("BLEXPLODE");
+            RunCommand("SCALEDIMVALUE");
         }
 
         //6
 
-        [RibbonButton("Tool CAD", "Block Tool", "Block Highlight",
+        [RibbonButton("Tool CAD", "Dim Tool", "Block Highlight",
             ToolTip = "Highlight tất cả block cùng tên bằng cách chuyển layer và đổi màu layer tạm",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -90,7 +91,7 @@ namespace Autocad_addin.Addin_Autocad.Button
 
         //6
 
-        [RibbonButton("Tool CAD", "Block Tool", "Change Layer Block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Change Layer Block",
             ToolTip = "Change layer of all blocks with the same name",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -104,7 +105,7 @@ namespace Autocad_addin.Addin_Autocad.Button
         }
 
         //4
-        [RibbonButton("Tool CAD", "Block Tool", "Thay tên block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Thay tên block",
             ToolTip = "Đổi tên block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -118,7 +119,7 @@ namespace Autocad_addin.Addin_Autocad.Button
         }
 
         //4
-        [RibbonButton("Tool CAD", "Block Tool", "Replace block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Replace block",
             ToolTip = "Thay thế block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -130,10 +131,10 @@ namespace Autocad_addin.Addin_Autocad.Button
             // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLREPLACE");
         }
-        
+
         //4
 
-        [RibbonButton("Tool CAD", "Block Tool", "SAVE AS NEW BLOCK",
+        [RibbonButton("Tool CAD", "Dim Tool", "SAVE AS NEW BLOCK",
             ToolTip = "Lưu block hiện tại dưới tên mới",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -143,12 +144,12 @@ namespace Autocad_addin.Addin_Autocad.Button
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-             RunCommand("BLSAVEASNEWBLOCK");
+            RunCommand("BLSAVEASNEWBLOCK");
         }
 
         //4
 
-        [RibbonButton("Tool CAD", "Block Tool", "Đổi Block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Đổi Block",
             ToolTip = "Hoán đổi vị trí giữa hai block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -163,7 +164,7 @@ namespace Autocad_addin.Addin_Autocad.Button
 
 
 
-        [RibbonButton("Tool CAD", "Block Tool", "Change Units Block",
+        [RibbonButton("Tool CAD", "Dim Tool", "Change Units Block",
             ToolTip = "Đổi tất cả đơn vị về mm",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",

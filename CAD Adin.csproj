@@ -48,18 +48,36 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\accoremgd.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\accoremgd.dll</HintPath>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acdbmgd.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acdbmgd.dll</HintPath>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acmgd.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acmgd.dll</HintPath>
     </Reference>
     <Reference Include="AdWindows">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\AdWindows.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\AdWindows.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -78,56 +96,75 @@
     <Compile Include="Addin\Admin\RibbonBuilder.cs" />
     <Compile Include="Addin\Admin\RibbonCommandHandler.cs" />
     <Compile Include="Addin\Admin\RibbonFramework.cs" />
+    <Compile Include="Addin\Admin\Utils.cs" />
     <Compile Include="Addin\Block\Code Block\Button_Block.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockBasePoint.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockCount.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockDelete.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockExplode.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockHighlight.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockLayerChange.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockRename.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockReplace.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockSaveAsNew.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockSwap.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\BlockUnits.cs" />
+    <Compile Include="Addin\Block\Code Block\Code\Equalize.cs" />
+    <Compile Include="Addin\Dim\Button Dim.cs" />
+    <Compile Include="Addin\Dim\Code\AutoDimPlates.cs" />
+    <Compile Include="Addin\Dim\Code\DimScaleStyleNew.cs" />
+    <Compile Include="Addin\Dim\Code\ScaleDimValue.cs" />
+    <Compile Include="Addin\Dim\Code\ScaleDimValueBlock.cs" />
     <Compile Include="Addin\Khac\Button_3D.cs" />
     <Compile Include="Addin\Lenh ve\Button_LenhVe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Addin\Button\" />
+    <Folder Include="Addin\Layer\" />
+    <Folder Include="Addin\NewFolder1\" />
+    <Folder Include="Addin\Text\" />
+    <Folder Include="Lisp\Block\" />
+    <Folder Include="Lisp\DIM\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Addin\Block\Code Block\bỏ\All in one.lsp" />
-    <None Include="Lisp\Block\LayerChangeBlock.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\5. LayerChangeBlock.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Create new block từ block section.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\1. Create new block từ block section.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Dem tat ca block trung ten.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\2. Dem tat ca block trung ten.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Doi goc toa do block cad - Copy.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\3. Doi goc toa do block cad.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Doi goc toa do block cad.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\4. Hien tat ca cac block trung tên.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Hien tat ca cac block trung tên.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\6. Pha khoi tat ca block trung ten.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Pha khoi tat ca block trung ten.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\7. Rename block.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Rename block.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\8. Replace block.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Replace block.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\9. Sua cung,hinh tron, khoi vuong theo nhau.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Sua cung,hinh tron, khoi vuong theo nhau.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\10. Swap block.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Swap block.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\11. thay doi unit tat ca cac block.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\thay doi unit tat ca cac block.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\12. Xoa block.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lisp\Block\Xoa block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Lisp\Block\Xoa tat ca block trung ten.lsp">
+    <None Include="Addin\Block\Code Block\Lisp\13. Xoa tat ca block trung ten.lsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Lisp\Chuyển toàn bộ layer được chọn sang layer khác.lsp" />
@@ -138,10 +175,10 @@
     <None Include="Lisp\Delete text, leader note.lsp" />
     <None Include="Lisp\DIM CHANGE STYLE WRITE.lsp" />
     <None Include="Lisp\dimdelete V2.lsp" />
-    <None Include="Lisp\DIM\AUTODIMPLATE.lsp" />
-    <None Include="Lisp\DIM\New_dim_scale_style.lsp" />
-    <None Include="Lisp\DIM\Scaledimvalue.lsp" />
-    <None Include="Lisp\DIM\Scale_dim_value_Block.lsp" />
+    <None Include="Addin\Dim\Lisp\AUTODIMPLATE.lsp" />
+    <None Include="Addin\Dim\Lisp\New_dim_scale_style.lsp" />
+    <None Include="Addin\Dim\Lisp\Scaledimvalue.lsp" />
+    <None Include="Addin\Dim\Lisp\Scale_dim_value_Block.lsp" />
     <None Include="Lisp\file gồm cả dcl\changelayer.dcl" />
     <None Include="Lisp\file gồm cả dcl\changelayer.lsp" />
     <None Include="Lisp\file gồm cả dcl\dimdelete.dcl" />

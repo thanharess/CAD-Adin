@@ -62,7 +62,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             RunLisp("(command \"_.RECTANG\")");
         }
 
-        [RibbonButton("MY TOOLS 3", "Lệnh Vẽ 2", "Vẽ Elip",
+        [RibbonButton("MY TOOLS", "Lệnh Vẽ 2", "Vẽ Elip",
             ToolTip = "Vẽ ellipse",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
@@ -72,7 +72,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             RunLisp("(command \"_.ELLIPSE\")");
         }
 
-        [RibbonButton("MY TOOLS 2", "Lệnh Vẽ 2", "Vẽ Điểm",
+        [RibbonButton("MY TOOLS", "Lệnh Vẽ 2", "Vẽ Điểm",
             ToolTip = "Vẽ point",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
