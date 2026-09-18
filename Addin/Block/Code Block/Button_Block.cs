@@ -8,6 +8,50 @@ namespace Autocad_addin.Addin_Autocad.Button
 {
     public static class Button_Block
     {
+        private static void RunLispFile(string fileName, string command, string nameSpace = null)
+    {
+        var doc = Application.DocumentManager.MdiActiveDocument;
+        if (doc == null) return;
+
+        // Thư mục gốc của plugin (nơi chứa DLL)
+        string dllPath = Assembly.GetExecutingAssembly().Location;
+        string root = Path.GetDirectoryName(dllPath);
+        string lispRoot = Path.Combine(root, "Lisp");
+
+        string lispPath = null;
+
+        // 1. Nếu có Namespace → ưu tiên tìm trong Lisp\Namespace\
+        if (!string.IsNullOrEmpty(nameSpace))
+        {
+            string folder = Path.Combine(lispRoot, nameSpace);
+            string tryPath = Path.Combine(folder, fileName);
+
+            if (File.Exists(tryPath))
+                lispPath = tryPath;
+        }
+
+        // 2. Không tìm thấy → tìm đệ quy toàn bộ thư mục Lisp
+        if (lispPath == null)
+        {
+            var found = Directory.GetFiles(lispRoot, fileName, SearchOption.AllDirectories);
+            if (found.Length > 0)
+                lispPath = found[0];
+        }
+
+        // 3. Vẫn không có → báo lỗi
+        if (lispPath == null || !File.Exists(lispPath))
+        {
+            doc.Editor.WriteMessage($"\n[Plugin] Không tìm thấy file LISP: {fileName}");
+            return;
+        }
+
+        // Load + chạy lệnh
+        string path = lispPath.Replace("\\", "/");
+        string fullCmd = $"(if (not (boundp '{command.ToLower()})) (load \"{path}\")) ({command}) ";
+
+        doc.SendStringToExecute(fullCmd, true, false, false);
+    }
+    
         [RibbonButton("Tool CAD", "Block Tool", "Layer Change Block",
             ToolTip = "Thay đổi layer của block",
             Size = RibbonItemSize.Standard,
@@ -17,8 +61,7 @@ namespace Autocad_addin.Addin_Autocad.Button
             Order = 1)]
         public static void LayerChangeBlock()
         {
-            // Load đúng file LISP rồi chạy lệnh
-            RunLispFile("LayerChangeBlock.lsp", "C:LAYERCHANGEBLOCK");
+            RunLispFile("LayerChangeBlock.lsp", "C:LAYERCHANGEBLOCK", "Block");
         }
 
         [RibbonButton("Tool CAD", "Block Tool", "Create New Block",
@@ -26,9 +69,9 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Namespace = "Block",
+            Namespace = "dim",
             Order = 2)]
-        public static void CreateNewBlock()
+        public static void SCALEDIMVALUE()
         {
             // Ví dụ:
             // RunLispFile("Create new block từ block section.lsp", "C:BLSAVEASNEWBLOCK");

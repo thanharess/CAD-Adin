@@ -254,6 +254,8 @@ namespace Autocad_addin.Framework
 
             return split;
         }
+
+        
         // Load ảnh với kích thước mục tiêu (16 hoặc 32)
         private System.Windows.Media.ImageSource LoadImage(string iconName, int targetSize = 16)
         {

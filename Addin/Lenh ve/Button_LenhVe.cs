@@ -13,10 +13,11 @@ namespace Autocad_addin.Addin_Autocad.Button
             ToolTip = "Vẽ line",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
+            Namespace = "dim",
             Order = 1)]
-        public static void LayerChangeBlock()
+        public static void SCALEDIMVALUE()
         {
-            RunLisp("(c:LayerChangeBlock)");
+            RunLisp("(c:SCALEDIMVALUE)");
         }
 
         [RibbonButton("MY TOOLS", "Lệnh Vẽ", "Vẽ Đa Giác",
