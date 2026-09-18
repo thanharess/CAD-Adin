@@ -6,7 +6,7 @@ using Autodesk.AutoCAD.Runtime;
 using System;
 using System.Collections.Generic;
 
-[assembly: CommandClass(typeof(AreaTools.AreaLabel))]
+
 
 namespace AreaTools
 {

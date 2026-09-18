@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -30,9 +31,26 @@ namespace BlockTools
             using (var tr = db.TransactionManager.StartTransaction())
             {
                 var srcRef = (BlockReference)tr.GetObject(per.ObjectId, OpenMode.ForRead);
-                string blkName = srcRef.Name;
+
+                // ✅ SỬA LỖI 2: Xử lý dynamic block
+                ObjectId srcDefId = srcRef.IsDynamicBlock
+                    ? srcRef.DynamicBlockTableRecord
+                    : srcRef.BlockTableRecord;
+
+                var srcDef = (BlockTableRecord)tr.GetObject(srcDefId, OpenMode.ForRead);
+                string blkName = srcDef.Name;
+
+                // Nếu là dynamic block, tên có thể là anonymous → dùng tên gốc
+                if (srcRef.IsDynamicBlock)
+                {
+                    var origDef = (BlockTableRecord)tr.GetObject(
+                        srcRef.AnonymousBlockTableRecord, OpenMode.ForRead);
+                    // AnonymousBlockTableRecord là def gốc cho dynamic block
+                }
+
                 Utils.Print($"🔹 Block được chọn: {blkName}");
 
+                // ── Chọn điểm gốc mới ──
                 var ppo = new PromptPointOptions("\nChọn điểm gốc mới (trong UCS hiện hành): ")
                 { UseBasePoint = true, BasePoint = srcRef.Position };
                 var ppr = ed.GetPoint(ppo);
@@ -42,8 +60,8 @@ namespace BlockTools
                 var invXform = srcRef.BlockTransform.Inverse();
                 var baseLocal = ppr.Value.TransformBy(invXform);
 
+                // ── Tạo block definition mới ──
                 var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-                var srcDef = (BlockTableRecord)tr.GetObject(srcRef.BlockTableRecord, OpenMode.ForRead);
 
                 string tempName = blkName + "TAOTHEM";
                 int k = 0;
@@ -54,42 +72,82 @@ namespace BlockTools
                 var newDefId = bt.Add(newDef);
                 tr.AddNewlyCreatedDBObject(newDef, true);
 
-                // Clone entity từ block gốc
+                // ── Clone entity từ block gốc ──
                 var ids = new List<ObjectId>();
                 foreach (ObjectId id in srcDef) ids.Add(id);
                 var idMap = new IdMapping();
                 db.DeepCloneObjects(new ObjectIdCollection(ids.ToArray()), newDefId, idMap, false);
 
-                // Dịch chuyển toàn bộ entity bằng -baseLocal
-                var offset = Point3d.Origin - baseLocal;   // đã là Vector3d
-                var mat = Matrix3d.Displacement(offset);   // truyền thẳng
+                // ── Dịch chuyển toàn bộ entity bằng -baseLocal ──
+                var offset = Point3d.Origin - baseLocal;
+                var mat = Matrix3d.Displacement(offset);
                 foreach (ObjectId id in newDef)
                 {
                     var ent = (Entity)tr.GetObject(id, OpenMode.ForWrite);
                     ent.TransformBy(mat);
                 }
 
-                // Cập nhật tất cả instance
-                var ss = ed.SelectAll(Utils.BlockNameFilter(blkName));
+                // ✅ SỬA LỖI 4: Quét TOÀN BỘ BlockTable để tìm mọi reference
                 int count = 0;
-                if (ss.Status == PromptStatus.OK)
+                foreach (ObjectId btrId in bt)
                 {
-                    foreach (SelectedObject so in ss.Value)
+                    var btr = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
+
+                    // Duyệt snapshot để tránh modify collection khi đang foreach
+                    var entIds = new List<ObjectId>();
+                    foreach (ObjectId id in btr) entIds.Add(id);
+
+                    foreach (ObjectId entId in entIds)
                     {
-                        if (so == null) continue;
-                        var br = (BlockReference)tr.GetObject(so.ObjectId, OpenMode.ForWrite);
+                        var ent = tr.GetObject(entId, OpenMode.ForRead) as Entity;
+                        if (!(ent is BlockReference br)) continue;
+
+                        // ✅ Kiểm tra br trỏ tới srcDef (kể cả dynamic)
+                        ObjectId brDefId = br.IsDynamicBlock
+                            ? br.DynamicBlockTableRecord
+                            : br.BlockTableRecord;
+
+                        if (brDefId != srcDef.ObjectId) continue;
+
+                        // ✅ SỬA LỖI 3: Lưu attribute values trước khi đổi def
+                        var attrValues = new Dictionary<string, string>();
+                        foreach (ObjectId attId in br.AttributeCollection)
+                        {
+                            var att = tr.GetObject(attId, OpenMode.ForRead)
+                                as AttributeReference;
+                            if (att != null) attrValues[att.Tag] = att.TextString;
+                        }
+
+                        br.UpgradeOpen();
+
+                        // Tính lại vị trí block reference
                         var newPos = baseLocal.TransformBy(br.BlockTransform);
                         br.Position = newPos;
                         br.BlockTableRecord = newDefId;
+
+                        // ✅ Gán lại attribute values theo tag
+                        foreach (ObjectId attId in br.AttributeCollection)
+                        {
+                            var att = tr.GetObject(attId, OpenMode.ForWrite)
+                                as AttributeReference;
+                            if (att != null && attrValues.TryGetValue(att.Tag, out string v))
+                                att.TextString = v;
+                        }
+
                         count++;
                     }
                 }
 
-                // Xóa block def cũ + đổi tên
+                // ✅ SỬA LỖI 1: Đổi tên srcDef trước, rồi mới đổi newDef, rồi erase
                 srcDef.UpgradeOpen();
-                srcDef.Erase();
+                string oldTempName = blkName + "_OLD_" + Guid.NewGuid()
+                    .ToString("N").Substring(0, 6);
+                srcDef.Name = oldTempName;
+
                 newDef.UpgradeOpen();
                 newDef.Name = blkName;
+
+                srcDef.Erase();
 
                 tr.Commit();
                 Utils.Print($"✅ Đã chỉnh base point của block <{blkName}>: {count} đối tượng.");

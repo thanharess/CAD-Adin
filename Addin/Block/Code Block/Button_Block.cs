@@ -11,13 +11,11 @@ namespace Autocad_addin.Addin_Autocad.Button
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
-
-            // Gọi lệnh đúng tên CommandMethod
             doc.SendStringToExecute(commandName + " ", true, false, false);
         }
 
         // =====================================================
-        // CÁC NÚT GỌI LỆNH CÓ SẴN
+        // CÁC NÚT
         // =====================================================
 
         [RibbonButton("Tool CAD", "Block Tool", "Block Base Point",
@@ -25,160 +23,131 @@ namespace Autocad_addin.Addin_Autocad.Button
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
+            Namespace = "BlockTools",
             Order = 1)]
         public static void BlockBasePoint()
         {
-            RunCommand("BMBASEPOINT");          // ← tên CommandMethod
+            RunCommand("BMBASEPOINT");
         }
-        //2
+
         [RibbonButton("Tool CAD", "Block Tool", "Đếm block",
             ToolTip = "Đếm số lần xuất hiện của block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
+            Namespace = "BlockTools",
             Order = 2)]
         public static void BLCOUNT()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLCOUNT");
         }
-        //3
 
         [RibbonButton("Tool CAD", "Block Tool", "Xóa Block",
             ToolTip = "Xóa các block có cùng tên",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 3)]
         public static void BLDELETE()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLDELETE");
         }
-
-        //6
 
         [RibbonButton("Tool CAD", "Block Tool", "Phá block",
             ToolTip = "Phá các block trong model có cùng tên",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 4)]
         public static void BLEXPLODE()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLEXPLODE");
         }
 
-        //6
-
         [RibbonButton("Tool CAD", "Block Tool", "Block Highlight",
-            ToolTip = "Highlight tất cả block cùng tên bằng cách chuyển layer và đổi màu layer tạm",
+            ToolTip = "Highlight tất cả block cùng tên",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "Block",
+            Order = 5)]
         public static void BLHLAYER()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLHLAYER");
         }
-
-        //6
 
         [RibbonButton("Tool CAD", "Block Tool", "Change Layer Block",
             ToolTip = "Change layer of all blocks with the same name",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 6)]
         public static void LAYERCHANGEBLOCK()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("LAYERCHANGEBLOCK");
         }
 
-        //4
         [RibbonButton("Tool CAD", "Block Tool", "Thay tên block",
             ToolTip = "Đổi tên block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 7)]
         public static void BLRENAME()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLRENAME");
         }
 
-        //4
         [RibbonButton("Tool CAD", "Block Tool", "Replace block",
             ToolTip = "Thay thế block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 8)]
         public static void BLREPLACE()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLREPLACE");
         }
-        
-        //4
 
         [RibbonButton("Tool CAD", "Block Tool", "SAVE AS NEW BLOCK",
             ToolTip = "Lưu block hiện tại dưới tên mới",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 9)]
         public static void BLSAVEASNEWBLOCK()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
-             RunCommand("BLSAVEASNEWBLOCK");
+            RunCommand("BLSAVEASNEWBLOCK");
         }
-
-        //4
 
         [RibbonButton("Tool CAD", "Block Tool", "Đổi Block",
             ToolTip = "Hoán đổi vị trí giữa hai block",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 2)]
+            Namespace = "BlockTools",
+            Order = 10)]
         public static void BLSWAP()
         {
-            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-            // còn nếu vẫn muốn dùng lệnh thì:
             RunCommand("BLSWAP");
         }
-
-
 
         [RibbonButton("Tool CAD", "Block Tool", "Change Units Block",
             ToolTip = "Đổi tất cả đơn vị về mm",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
-            Order = 3)]
+            Namespace = "BlockTools",
+            Order = 11)]
         public static void BLchangeallunitmm()
         {
-            RunCommand("BLchangeallunitmm");    // ← tên CommandMethod của bạn
+            RunCommand("BLchangeallunitmm");
         }
-
-        // Thêm nút khác tương tự...
-        // [RibbonButton(...)]
-        // public static void TenNut()
-        // {
-        //     RunCommand("TENLENH");
-        // }
     }
 }
