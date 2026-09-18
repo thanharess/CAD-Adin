@@ -3,11 +3,14 @@
     <Platform Name="Any CPU" />
     <Platform Name="ARM64" />
     <Platform Name="x64" />
+    <Platform Name="x86" />
   </Configurations>
   <Project Path="CAD_Addin.csproj" Id="03c8c13d-af9d-4a57-a55e-1897ac47fcc8">
-    <BuildType Solution="Debug|x64" Project="Release" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="Debug|ARM64" Project="x64" />
+    <Platform Solution="Debug|x86" Project="x86" />
+    <Platform Solution="Release|Any CPU" Project="x64" />
     <Platform Solution="Release|ARM64" Project="ARM64" />
+    <Platform Solution="Release|x86" Project="x64" />
   </Project>
 </Solution>

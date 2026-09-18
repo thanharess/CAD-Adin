@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage
+    SchemaVersion="1.0"
+    AppVersion="1.0.0"
+    ProductCode="{d483e526-d60d-4ddc-a604-7122a0ac6d46}"
+    Name="CAD_Addin"
+    Description="CAD Addin for AutoCAD">
+
+  <CompanyDetails Name="Your Name" />
+
+  <RuntimeRequirements
+      OS="Win64"
+      Platform="AutoCAD*"
+      SeriesMin="R24.0"
+      SeriesMax="R99.0" />
+
+  <Components Description="CAD Addin Components">
+    <RuntimeRequirements
+        OS="Win64"
+        Platform="AutoCAD*"
+        SeriesMin="R24.0"
+        SeriesMax="R99.0" />
+
+    <ComponentEntry
+        AppName="CAD_Addin"
+        ModuleName="./Contents/Windows/CAD_Addin.dll"   
+    LoadOnAutoCADStartup="True"
+    LoadOnCommandInvocation="False"
+    LoadOnAppearance="False" />
+  </Components>
+</ApplicationPackage>

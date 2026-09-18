@@ -47,6 +47,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
@@ -66,18 +67,41 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <WarningLevel>5</WarningLevel>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\accoremgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2021\accoremgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acdbmgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2021\acdbmgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\acmgd.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2021\acmgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AdWindows">
-      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2022\AdWindows.dll</HintPath>
+      <HintPath>D:\FILE CAI PHAN MEM\AUTOCAD\ATC\AutoCAD 2021\AdWindows.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -94,166 +118,240 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Addin\Framework\RibbonApp.cs" />
-    <Compile Include="Addin\Framework\RibbonBuilder.cs" />
-    <Compile Include="Addin\Framework\RibbonCommandHandler.cs" />
-    <Compile Include="Addin\Framework\RibbonFramework.cs" />
-    <Compile Include="Addin\Comon\Utils.cs" />
-    <Compile Include="Addin\Block\Code Block\Button_Block.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockBasePoint.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockCount.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockDelete.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockExplode.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockHighlight.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockLayerChange.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockRename.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockReplace.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockSaveAsNew.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockSwap.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\BlockUnits.cs" />
-    <Compile Include="Addin\Block\Code Block\Code\Equalize.cs" />
-    <Compile Include="Addin\Dim\Button Dim.cs" />
-    <Compile Include="Addin\Dim\Code\AutoDimPlates.cs" />
-    <Compile Include="Addin\Dim\Code\DimChangeStyleWrite.cs" />
-    <Compile Include="Addin\Dim\Code\DimDelete V2.cs" />
-    <Compile Include="Addin\Dim\Code\DIMDELETE.cs" />
-    <Compile Include="Addin\Dim\Code\DimScaleStyleNew.cs" />
-    <Compile Include="Addin\Dim\Code\DIMTEXTSTYLE.cs" />
-    <Compile Include="Addin\Dim\Code\ScaleDimValue.cs" />
-    <Compile Include="Addin\Dim\Code\ScaleDimValueBlock.cs" />
-    <Compile Include="Addin\Khac\Button Khac.cs" />
-    <Compile Include="Addin\Khac\Button_VLX.cs" />
-    <Compile Include="Addin\Khac\Code\Tinh_dien_tich_hinh_hoc.cs" />
-    <Compile Include="Addin\Layer\Button Layer.cs" />
-    <Compile Include="Addin\Layer\Code\CHANGELAYER.cs" />
-    <Compile Include="Addin\Layer\Code\LayerChangeReplateLine.cs" />
-    <Compile Include="Addin\Layer\Code\LAYERDELETE.cs" />
-    <Compile Include="Addin\Layer\Code\LineTypeToLayer.cs" />
-    <Compile Include="Addin\Layer\Code\Thay_layer_bang_phim_tat.cs" />
-    <Compile Include="Addin\Draw\Button_Draw.cs" />
-    <Compile Include="Addin\Draw\Code\ScaleLine.cs" />
-    <Compile Include="Addin\Text\Button_Text.cs" />
-    <Compile Include="Addin\Draw\Code\DeleteLineByLt.cs" />
-    <Compile Include="Addin\Text\Code\DeleteTextAndLeader.cs" />
-    <Compile Include="Addin\Text\Code\FontChangeAllTimeNewRoman.cs" />
-    <Compile Include="Addin\Text\Code\TextFillNone.cs" />
-    <Compile Include="Addin\Text\Code\TextReplace.cs" />
-    <Compile Include="Addin\Text\Code\ThemChuVaoText.cs" />
-    <Compile Include="Addin\Text\Code\Uclv.cs" />
-    <Compile Include="Addin\Text\Code\XoaChuTrongText.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Contents\Windows\Addin\Framework\RibbonApp.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Framework\RibbonBuilder.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Framework\RibbonCommandHandler.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Framework\RibbonFramework.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Comon\Utils.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Button_Block.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockBasePoint.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockCount.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockDelete.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockExplode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockHighlight.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockLayerChange.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockRename.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockReplace.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockSaveAsNew.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockSwap.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockUnits.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\Equalize.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Button Dim.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\AutoDimPlates.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\DimChangeStyleWrite.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\DimDelete V2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\DIMDELETE.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\DimScaleStyleNew.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\DIMTEXTSTYLE.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\ScaleDimValue.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Dim\Code\ScaleDimValueBlock.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Khac\Button Khac.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Khac\Button_VLX.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Khac\Code\Tinh_dien_tich_hinh_hoc.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Button Layer.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Code\CHANGELAYER.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Code\LayerChangeReplateLine.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Code\LAYERDELETE.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Code\LineTypeToLayer.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Layer\Code\Thay_layer_bang_phim_tat.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Draw\Button_Draw.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Draw\Code\ScaleLine.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Button_Text.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Draw\Code\DeleteLineByLt.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\DeleteTextAndLeader.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\FontChangeAllTimeNewRoman.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\TextFillNone.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\TextReplace.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\ThemChuVaoText.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\Uclv.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Contents\Windows\Addin\Text\Code\XoaChuTrongText.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Addin\Skill\Code\" />
+    <Folder Include="Contents\Windows\Addin\Skill\Code\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Addin\Block\Code Block\bỏ\All in one.lsp" />
-    <None Include="Addin\Block\Code Block\Lisp\5. LayerChangeBlock.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\1. Create new block từ block section.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\2. Dem tat ca block trung ten.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\3. Doi goc toa do block cad.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\4. Hien tat ca cac block trung tên.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\6. Pha khoi tat ca block trung ten.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\7. Rename block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\8. Replace block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\9. Sua cung,hinh tron, khoi vuong theo nhau.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\10. Swap block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\11. thay doi unit tat ca cac block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\12. Xoa block.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Block\Code Block\Lisp\13. Xoa tat ca block trung ten.lsp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Addin\Layer\Lisp\Chuyển toàn bộ layer được chọn sang layer khác.lsp" />
-    <None Include="Addin\Text\Lisp\Chuyển đổi chữ hoa sang thường và ngược lại.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\changelayer.dcl" />
-    <None Include="Lisp\lisp\file gồm cả dcl\changelayer.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\dimdelete.dcl" />
-    <None Include="Lisp\lisp\file gồm cả dcl\dimdelete.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\dimtextstylechange.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\dimtextstyle_v5_memory.dcl" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\changelayer.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\dimdelete.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\dimtextstylechange.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\Layerdelete.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\V1\changelayer.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\V1\dimdelete.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\V1\dimtextstylechange.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\File gốc\V1\Layerdelete.lsp" />
-    <None Include="Lisp\lisp\file gồm cả dcl\layerdelete.dcl" />
-    <None Include="Lisp\lisp\file gồm cả dcl\Layerdelete.lsp" />
-    <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp theo đường dẫn.lsp" />
-    <None Include="Lisp\Ko cần thiêt\Chạy tất cả file lisp.lsp" />
-    <None Include="Addin\Draw\Lisp\Delete Centerline, mark.lsp" />
-    <None Include="Addin\Text\Lisp\Delete text, leader note.lsp" />
-    <None Include="Addin\Dim\Lisp\2. DIM CHANGE STYLE WRITE.lsp" />
-    <None Include="Addin\Dim\Lisp\3. dimdelete V2.lsp" />
-    <None Include="Addin\Dim\Lisp\1. AUTODIMPLATE.lsp" />
-    <None Include="Addin\Dim\Lisp\4. New_dim_scale_style.lsp" />
-    <None Include="Addin\Dim\Lisp\6. Scaledimvalue.lsp" />
-    <None Include="Addin\Dim\Lisp\5. Scale_dim_value_Block.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\changelayer.dcl" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\changelayer.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\dimdelete.dcl" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\dimdelete.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\dimtextstylechange.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\dimtextstyle_v5_memory.dcl" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\changelayer.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\dimdelete.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\dimtextstylechange.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\Layerdelete.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\changelayer.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\dimdelete.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\dimtextstylechange.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\Layerdelete.lsp" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\layerdelete.dcl" />
-    <None Include="Addin\Skill\Lisp\file gồm cả dcl\Layerdelete.lsp" />
-    <None Include="Lisp\Ko cần thiêt\Plot_PDF_auto - Copy.lsp" />
-    <None Include="Lisp\Ko cần thiêt\Plot_PDF_auto.lsp" />
-    <None Include="Addin\Text\Lisp\Replace_text.lsp" />
-    <None Include="Addin\Draw\Lisp\Scale_liner.lsp" />
-    <None Include="Addin\Text\Lisp\Text_fill_color_none.lsp" />
-    <None Include="Addin\Text\Lisp\Thay font chu all style text V2.lsp" />
-    <None Include="Addin\Layer\Lisp\Thay_layer_bang_phim_tat.lsp" />
-    <None Include="Addin\Text\Lisp\them chu vao text.lsp" />
-    <None Include="Addin\Khac\Lisp\Tinh_dien_tich_hinh_hoc.lsp" />
-    <None Include="Addin\Layer\Lisp\To line type change layer line.lsp" />
-    <None Include="Lisp\VV_TRICH_CHI_TIET_PHUC.VLX" />
-    <None Include="Addin\Text\Lisp\xoa chu trong text.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\bỏ\All in one.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\5. LayerChangeBlock.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\1. Create new block từ block section.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\2. Dem tat ca block trung ten.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\3. Doi goc toa do block cad.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\4. Hien tat ca cac block trung tên.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\6. Pha khoi tat ca block trung ten.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\7. Rename block.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\8. Replace block.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\9. Sua cung,hinh tron, khoi vuong theo nhau.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\10. Swap block.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\11. thay doi unit tat ca cac block.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\12. Xoa block.lsp" />
+    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\13. Xoa tat ca block trung ten.lsp" />
+    <Content Include="Contents\Windows\Addin\Layer\Lisp\Chuyển toàn bộ layer được chọn sang layer khác.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\Chuyển đổi chữ hoa sang thường và ngược lại.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\changelayer.dcl" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\changelayer.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\dimdelete.dcl" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\dimtextstyle_v5_memory.dcl" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\changelayer.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\V1\changelayer.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\V1\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\V1\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\File gốc\V1\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\layerdelete.dcl" />
+    <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Chạy tất cả file lisp theo đường dẫn.lsp" />
+    <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Chạy tất cả file lisp.lsp" />
+    <Content Include="Contents\Windows\Addin\Draw\Lisp\Delete Centerline, mark.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\Delete text, leader note.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\2. DIM CHANGE STYLE WRITE.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\3. dimdelete V2.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\1. AUTODIMPLATE.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\4. New_dim_scale_style.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\6. Scaledimvalue.lsp" />
+    <Content Include="Contents\Windows\Addin\Dim\Lisp\5. Scale_dim_value_Block.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\changelayer.dcl" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\changelayer.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\dimdelete.dcl" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\dimtextstyle_v5_memory.dcl" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\changelayer.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\changelayer.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\dimdelete.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\dimtextstylechange.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\File gốc\V1\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\layerdelete.dcl" />
+    <Content Include="Contents\Windows\Addin\Skill\Lisp\file gồm cả dcl\Layerdelete.lsp" />
+    <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Plot_PDF_auto - Copy.lsp" />
+    <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Plot_PDF_auto.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\Replace_text.lsp" />
+    <Content Include="Contents\Windows\Addin\Draw\Lisp\Scale_liner.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\Text_fill_color_none.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\Thay font chu all style text V2.lsp" />
+    <Content Include="Contents\Windows\Addin\Layer\Lisp\Thay_layer_bang_phim_tat.lsp" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\them chu vao text.lsp" />
+    <Content Include="Contents\Windows\Addin\Khac\Lisp\Tinh_dien_tich_hinh_hoc.lsp" />
+    <Content Include="Contents\Windows\Addin\Layer\Lisp\To line type change layer line.lsp" />
+    <Content Include="Contents\Windows\Lisp\VV_TRICH_CHI_TIET_PHUC.VLX" />
+    <Content Include="Contents\Windows\Addin\Text\Lisp\xoa chu trong text.lsp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Addin\PackageContents.xml">
+    <Content Include="PackageContents.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\A1.png">
+    <Content Include="Contents\Windows\Image\A1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\A2.png">
+    <Content Include="Contents\Windows\Image\A2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
