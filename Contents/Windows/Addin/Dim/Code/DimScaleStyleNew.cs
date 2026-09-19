@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -10,85 +10,47 @@ using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace CADAddin.Dim
 {
-    public class DimScaleStyleNew
+    public class DimScaleStyleNewa
     {
         [CommandMethod("DIMSCALESYLENEW")]
-        public void CreateScaledDimStyle()
+        public void DimScaleStyleNew()
         {
             var doc = AcApp.DocumentManager.MdiActiveDocument;
-
-            if (doc == null)
-                return;
+            if (doc == null) return;
 
             var ed = doc.Editor;
             var db = doc.Database;
 
-            // =====================================================
-            // 1. CHỌN DIMENSION
-            // =====================================================
+            // ═══════════════════════════════════════════════════════
+            //  BƯỚC 1: Chọn DIMENSION để lấy Dimstyle gốc
+            // ═══════════════════════════════════════════════════════
+            var peo = new PromptEntityOptions(
+                "\nChọn một DIMENSION để lấy Dimstyle gốc: ");
+            peo.SetRejectMessage("\nChỉ được chọn DIMENSION!");
+            peo.AddAllowedClass(typeof(Dimension), false);
 
-            PromptEntityOptions peo =
-                new PromptEntityOptions(
-                    "\nChọn một DIMENSION để lấy Dimstyle gốc: ");
-
-            peo.SetRejectMessage(
-                "\nChỉ được chọn DIMENSION!");
-
-            peo.AddAllowedClass(
-                typeof(Dimension),
-                false);
-
-            PromptEntityResult per =
-                ed.GetEntity(peo);
-
+            var per = ed.GetEntity(peo);
             if (per.Status != PromptStatus.OK)
             {
                 Utils.Print("⏹️ Hủy lệnh.");
                 return;
             }
 
-            string fullStyleName;
+            ObjectId selectedDimId = per.ObjectId;
             string oldStyleName;
 
-            // =====================================================
-            // LẤY DIMSTYLE CỦA DIM ĐƯỢC CHỌN
-            // =====================================================
-
-            using (Transaction tr =
-                db.TransactionManager.StartTransaction())
+            using (var tr = db.TransactionManager.StartTransaction())
             {
-                Dimension dim =
-                    (Dimension)tr.GetObject(
-                        per.ObjectId,
-                        OpenMode.ForRead);
+                var dim = (Dimension)tr.GetObject(selectedDimId, OpenMode.ForRead);
+                string fullStyleName = dim.DimensionStyleName;
+                oldStyleName = fullStyleName;
 
-                fullStyleName =
-                    dim.DimensionStyleName;
-
-                oldStyleName =
-                    fullStyleName;
-
-                // Xử lý tên dạng:
-                // ABC$0$DEF
-                //
-                // lấy:
-                // ABC
-
-                int dollarIndex =
-                    fullStyleName.IndexOf('$');
-
+                int dollarIndex = fullStyleName.IndexOf('$');
                 if (dollarIndex > 0)
                 {
-                    string shortName =
-                        fullStyleName.Substring(
-                            0,
-                            dollarIndex);
-
-                    DimStyleTable dimTable =
-                        (DimStyleTable)tr.GetObject(
-                            db.DimStyleTableId,
-                            OpenMode.ForRead);
-
+                    string shortName = fullStyleName.Substring(0, dollarIndex);
+                    var dimTable = (DimStyleTable)tr.GetObject(
+                        db.DimStyleTableId, OpenMode.ForRead);
                     if (dimTable.Has(shortName))
                         oldStyleName = shortName;
                 }
@@ -96,798 +58,389 @@ namespace CADAddin.Dim
                 tr.Commit();
             }
 
-            Utils.Print(
-                "Dimstyle gốc: " +
-                oldStyleName);
+            Utils.Print("Dimstyle gốc: " + oldStyleName);
 
-
-            // =====================================================
-            // 2. FORM CHỌN CHẾ ĐỘ
-            // =====================================================
-
+            // ═══════════════════════════════════════════════════════
+            //  BƯỚC 2: Form
+            // ═══════════════════════════════════════════════════════
             double userScale;
             bool isScaleTo;
+            bool applyToSelectedDim;
 
-            using (DimScaleForm form =
-                new DimScaleForm(oldStyleName))
+            using (var form = new DimScaleForma(oldStyleName))
             {
-                DialogResult result =
-                    AcApp.ShowModalDialog(form);
-
-                if (result != DialogResult.OK)
+                if (AcApp.ShowModalDialog(form) != DialogResult.OK)
                 {
                     Utils.Print("⏹️ Hủy lệnh.");
                     return;
                 }
-
-                userScale =
-                    form.ScaleValue;
-
-                isScaleTo =
-                    form.IsScaleTo;
+                userScale = form.ScaleValue;
+                isScaleTo = form.IsScaleTo;
+                applyToSelectedDim = form.ApplyToSelectedDim;   // ← MỚI
             }
 
+            // ═══════════════════════════════════════════════════════
+            //  BƯỚC 3: Hệ số hiệu dụng
+            // ═══════════════════════════════════════════════════════
+            double effectiveScale = isScaleTo ? userScale : (1.0 / userScale);
 
-            // =====================================================
-            // 3. TÍNH DIMLFAC
-            // =====================================================
-
-            double effectiveScale;
-
-            if (isScaleTo)
-                effectiveScale = userScale;
-            else
-                effectiveScale = 1.0 / userScale;
-
-
-            // =====================================================
-            // 4. TÊN STYLE MỚI
-            // =====================================================
-
-            string newStyleName;
-
-            if (isScaleTo)
-            {
-                newStyleName =
-                    oldStyleName +
-                    " Scale " +
-                    userScale.ToString(
-                        "F2",
-                        CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                newStyleName =
-                    oldStyleName +
-                    " Scale 1 chia " +
-                    userScale.ToString(
-                        "F2",
-                        CultureInfo.InvariantCulture);
-            }
-
-
-            // AutoCAD DIMSTYLE tối đa 31 ký tự
+            // ═══════════════════════════════════════════════════════
+            //  BƯỚC 4: Tên style mới
+            // ═══════════════════════════════════════════════════════
+            string newStyleName = isScaleTo
+                ? oldStyleName + " Scale " + userScale.ToString("F2", CultureInfo.InvariantCulture)
+                : oldStyleName + " Scale 1 chia " + userScale.ToString("F2", CultureInfo.InvariantCulture);
 
             if (newStyleName.Length > 31)
-            {
-                newStyleName =
-                    newStyleName.Substring(
-                        0,
-                        31);
-            }
+                newStyleName = newStyleName.Substring(0, 31);
 
+            Utils.Print("Style mới: " + newStyleName);
+            Utils.Print("Hệ số scale (DIMLFAC): " + effectiveScale.ToString("F4", CultureInfo.InvariantCulture));
+            Utils.Print("Áp dụng cho dim đã chọn: " + (applyToSelectedDim ? "CÓ" : "KHÔNG"));
 
-            Utils.Print(
-                "Style mới: " +
-                newStyleName);
-
-            Utils.Print(
-                "DIMLFAC: " +
-                effectiveScale.ToString(
-                    "F4",
-                    CultureInfo.InvariantCulture));
-
-
-            // =====================================================
-            // 5. TẠO STYLE
-            // =====================================================
-
+            // ═══════════════════════════════════════════════════════
+            //  BƯỚC 5: Tạo style mới
+            // ═══════════════════════════════════════════════════════
             try
             {
-                using (Transaction tr =
-                    db.TransactionManager.StartTransaction())
+                ObjectId newStyleId = ObjectId.Null;
+
+                using (var tr = db.TransactionManager.StartTransaction())
                 {
-                    DimStyleTable dimStyles =
-                        (DimStyleTable)tr.GetObject(
-                            db.DimStyleTableId,
-                            OpenMode.ForRead);
-
-
-                    // =================================================
-                    // KIỂM TRA STYLE GỐC
-                    // =================================================
+                    var dimStyles = (DimStyleTable)tr.GetObject(
+                        db.DimStyleTableId, OpenMode.ForRead);
 
                     if (!dimStyles.Has(oldStyleName))
                     {
-                        MessageBox.Show(
-                            "Không tìm thấy Dimstyle gốc:\n\n" +
-                            oldStyleName,
-                            "Lỗi",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-
+                        MessageBox.Show("Không tìm thấy Dimstyle gốc:\n\n" + oldStyleName,
+                            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-
-                    // =================================================
-                    // NẾU STYLE MỚI ĐÃ TỒN TẠI
-                    // =================================================
-
+                    // ── Ghi đè nếu đã tồn tại ──
                     if (dimStyles.Has(newStyleName))
                     {
-                        DialogResult ask =
-                            MessageBox.Show(
-                                "Dimstyle đã tồn tại:\n\n" +
-                                newStyleName +
-                                "\n\nBạn có muốn ghi đè không?",
-                                "Dimstyle đã tồn tại",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question);
+                        var ask = MessageBox.Show(
+                            "Dimstyle đã tồn tại:\n\n" + newStyleName +
+                            "\n\nBạn có muốn ghi đè không?",
+                            "Dimstyle đã tồn tại",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                         if (ask != DialogResult.Yes)
                         {
-                            Utils.Print(
-                                "⏹️ Hủy lệnh.");
-
+                            Utils.Print("⏹️ Hủy lệnh.");
                             return;
                         }
 
-
-                        // Mở bảng DimStyle để xóa
-
                         dimStyles.UpgradeOpen();
-
-                        ObjectId existedId =
-                            dimStyles[newStyleName];
-
-                        DimStyleTableRecord existed =
-                            (DimStyleTableRecord)
-                            tr.GetObject(
-                                existedId,
-                                OpenMode.ForWrite);
-
+                        ObjectId existedId = dimStyles[newStyleName];
+                        var existed = (DimStyleTableRecord)tr.GetObject(
+                            existedId, OpenMode.ForWrite);
                         existed.Erase();
                     }
 
-
-                    // =================================================
-                    // LẤY STYLE GỐC
-                    // =================================================
-
-                    ObjectId oldStyleId =
-                        dimStyles[oldStyleName];
-
-                    DimStyleTableRecord oldStyle =
-                        (DimStyleTableRecord)
-                        tr.GetObject(
-                            oldStyleId,
-                            OpenMode.ForRead);
-
-
-                    // =================================================
-                    // TẠO STYLE MỚI
-                    // =================================================
-
+                    // ── (1) Tạo record rỗng + Add vào table ──
                     dimStyles.UpgradeOpen();
+                    var newStyle = new DimStyleTableRecord();
+                    newStyleId = dimStyles.Add(newStyle);
+                    tr.AddNewlyCreatedDBObject(newStyle, true);
 
-                    DimStyleTableRecord newStyle =
-                        new DimStyleTableRecord();
-
-                    // -------------------------------------------------
-                    // Copy toàn bộ thuộc tính từ style gốc
-                    // -------------------------------------------------
-
+                    // ── (2) CopyFrom style gốc ──
+                    var oldStyle = (DimStyleTableRecord)tr.GetObject(
+                        dimStyles[oldStyleName], OpenMode.ForRead);
                     newStyle.CopyFrom(oldStyle);
 
-                    // -------------------------------------------------
-                    // QUAN TRỌNG:
-                    //
-                    // CopyFrom có thể copy luôn Name của style gốc.
-                    // Vì vậy PHẢI đặt Name lại sau CopyFrom.
-                    // -------------------------------------------------
+                    // ── (3) Gán tên SAU CopyFrom ──
+                    newStyle.Name = newStyleName;
 
-                    newStyle.Name =
-                        newStyleName;
+                    // ── (4) Ghi DIMLFAC ──
+                    newStyle.Dimlfac = effectiveScale;
 
-                    // -------------------------------------------------
-                    // Ghi DIMLFAC sau CopyFrom
-                    // -------------------------------------------------
+                    // ═══════════════════════════════════════════════
+                    //  (5) ÁP DỤNG CHO DIM ĐÃ CHỌN — CHỈ KHI USER CHỌN
+                    // ═══════════════════════════════════════════════
+                    if (applyToSelectedDim)
+                    {
+                        var dim = (Dimension)tr.GetObject(selectedDimId, OpenMode.ForWrite);
+                        dim.DimensionStyle = newStyleId;
+                        dim.SetDimstyleData(newStyle);   // xóa override cũ
+                    }
 
-                    newStyle.Dimlfac =
-                        effectiveScale;
-
-                    // -------------------------------------------------
-                    // Add vào DimStyleTable
-                    // -------------------------------------------------
-
-                    ObjectId newStyleId =
-                        dimStyles.Add(newStyle);
-
-                    tr.AddNewlyCreatedDBObject(
-                        newStyle,
-                        true);
-
-                    // -------------------------------------------------
-                    // Đặt làm Current
-                    // -------------------------------------------------
-
-                    db.Dimstyle =
-                        newStyleId;
+                    // Set current (backup 1)
+                    db.Dimstyle = newStyleId;
 
                     tr.Commit();
                 }
 
-
-                // =====================================================
-                // REGEN
-                // =====================================================
+                // ── (6) SET CURRENT SAU COMMIT ──
+                try
+                {
+                    AcApp.SetSystemVariable("DIMSTYLE", newStyleName);
+                }
+                catch
+                {
+                    db.Dimstyle = newStyleId;
+                }
 
                 ed.Regen();
 
+                string modeText = isScaleTo
+                    ? "Scale DIM to " + userScale.ToString("F2", CultureInfo.InvariantCulture)
+                    : "Scale DIM nhỏ 1/" + userScale.ToString("F2", CultureInfo.InvariantCulture);
 
-                // =====================================================
-                // THÔNG BÁO
-                // =====================================================
-
-                string modeText;
-
-                if (isScaleTo)
-                {
-                    modeText =
-                        "Scale DIM to " +
-                        userScale.ToString(
-                            "F2",
-                            CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    modeText =
-                        "Scale DIM nhỏ 1/" +
-                        userScale.ToString(
-                            "F2",
-                            CultureInfo.InvariantCulture);
-                }
-
-
-                string message =
-                    "Đã tạo Dimstyle mới!\n\n" +
-
-                    "Dimstyle gốc:\n" +
-                    oldStyleName +
-                    "\n\n" +
-
-                    "Dimstyle mới:\n" +
-                    newStyleName +
-                    "\n\n" +
-
-                    "Chế độ:\n" +
-                    modeText +
-                    "\n\n" +
-
-                    "DIMLFAC = " +
-                    effectiveScale.ToString(
-                        "F4",
-                        CultureInfo.InvariantCulture) +
-                    "\n\n" +
-
-                    "Style mới đã được đặt làm Current.\n\n" +
-
-                    "DIM đã chọn ban đầu không bị thay đổi.";
+                string applyText = applyToSelectedDim
+                    ? "✔ Đã gán cho Dimension đã chọn (xóa override cũ)."
+                    : "○ Không gán cho Dimension đã chọn (giữ style cũ).";
 
                 MessageBox.Show(
-                    message,
+                    "Đã tạo Dimstyle mới và áp dụng Scale!\n\n" +
+                    "Dimstyle gốc: " + oldStyleName + "\n" +
+                    "Dimstyle mới: " + newStyleName + "\n\n" +
+                    "Chế độ: " + modeText + "\n" +
+                    "Measurement Scale Factor (DIMLFAC): " +
+                        effectiveScale.ToString("F4", CultureInfo.InvariantCulture) + "\n\n" +
+                    "✔ Style mới đã được đặt làm CURRENT.\n" +
+                    applyText + "\n\n" +
+                    "Mở DIMSTYLE để kiểm tra.",
                     "DIMSCALESYLENEW",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi khi tạo Dimstyle:\n\n" +
-                    ex.Message,
-                    "Lỗi",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-
-                Utils.Print(
-                    "❌ DIMSCALESYLENEW: " +
-                    ex.Message);
+                MessageBox.Show("Lỗi khi tạo Dimstyle:\n\n" + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.Print("❌ DIMSCALESYLENEW: " + ex.Message);
             }
         }
     }
 
-
-    // =============================================================
-    // FORM CHỌN SCALE
-    // =============================================================
-
-    public class DimScaleForm : Form
+    // ═══════════════════════════════════════════════════════════
+    //  FORM
+    // ═══════════════════════════════════════════════════════════
+    public class DimScaleForma : Form
     {
         private RadioButton rbScaleTo;
         private RadioButton rbScaleSmall;
-
         private TextBox txtScale;
-
         private Label lblPreviewValue;
-
+        private CheckBox chkApplyToDim;                 // ← MỚI
         private Button btnOK;
         private Button btnCancel;
-
         private readonly string _oldStyle;
 
+        public double ScaleValue { get; private set; }
+        public bool IsScaleTo => rbScaleTo.Checked;
+        public bool ApplyToSelectedDim => chkApplyToDim.Checked;   // ← MỚI
 
-        // =========================================================
-        // GIÁ TRỊ TRẢ VỀ
-        // =========================================================
-
-        public double ScaleValue
+        public DimScaleForma(string oldStyle)
         {
-            get;
-            private set;
-        }
+            _oldStyle = oldStyle ?? "";
 
-
-        public bool IsScaleTo
-        {
-            get
-            {
-                return rbScaleTo.Checked;
-            }
-        }
-
-
-        // =========================================================
-        // CONSTRUCTOR
-        // =========================================================
-
-        public DimScaleForm(
-            string oldStyle)
-        {
-            _oldStyle =
-                oldStyle ?? "";
-
-
-            // =====================================================
-            // FORM
-            // =====================================================
-
-            this.Text =
-                "Tạo Dimstyle mới theo Scale";
-
-            this.ClientSize =
-                new Size(460, 315);
-
-            this.FormBorderStyle =
-                FormBorderStyle.FixedDialog;
-
-            this.StartPosition =
-                FormStartPosition.CenterScreen;
-
+            this.Text = "Tạo Dimstyle mới theo Scale";
+            this.ClientSize = new Size(460, 360);       // tăng chiều cao
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-
             this.ShowInTaskbar = false;
 
+            // ── Dimstyle gốc ──
+            Label lblOldStyle = new Label
+            {
+                Text = "Dimstyle gốc:",
+                Left = 20,
+                Top = 20,
+                Width = 110
+            };
+            Label lblOldStyleValue = new Label
+            {
+                Text = _oldStyle,
+                Left = 135,
+                Top = 20,
+                Width = 300,
+                Font = new System.Drawing.Font(this.Font, FontStyle.Bold),
+                ForeColor = Color.DarkBlue
+            };
 
-            // =====================================================
-            // DIMSTYLE GỐC
-            // =====================================================
+            // ── Chế độ ──
+            Label lblMode = new Label
+            {
+                Text = "Chế độ:",
+                Left = 20,
+                Top = 60,
+                Width = 110,
+                Font = new System.Drawing.Font(this.Font, FontStyle.Bold)
+            };
 
-            Label lblOldStyle =
-                new Label();
+            Panel pnlMode = new Panel
+            {
+                Left = 20,
+                Top = 85,
+                Width = 415,
+                Height = 65
+            };
 
-            lblOldStyle.Text =
-                "Dimstyle gốc:";
+            rbScaleTo = new RadioButton
+            {
+                Text = "1. Scale DIM to N lần (phóng to)",
+                Left = 5,
+                Top = 5,
+                Width = 400,
+                Checked = true
+            };
+            rbScaleSmall = new RadioButton
+            {
+                Text = "2. Scale DIM nhỏ = 1/N (thu nhỏ)",
+                Left = 5,
+                Top = 32,
+                Width = 400
+            };
+            pnlMode.Controls.Add(rbScaleTo);
+            pnlMode.Controls.Add(rbScaleSmall);
 
-            lblOldStyle.Left = 20;
-            lblOldStyle.Top = 20;
-            lblOldStyle.Width = 110;
+            // ── Hệ số N ──
+            Label lblScale = new Label
+            {
+                Text = "Hệ số N (>0):",
+                Left = 20,
+                Top = 170,
+                Width = 120
+            };
+            txtScale = new TextBox
+            {
+                Left = 145,
+                Top = 167,
+                Width = 290,
+                Text = "2"
+            };
+            txtScale.TextChanged += delegate { UpdatePreview(); };
 
+            // ── Preview ──
+            Label lblPreview = new Label
+            {
+                Text = "Style mới:",
+                Left = 20,
+                Top = 215,
+                Width = 120,
+                Font = new System.Drawing.Font(this.Font, FontStyle.Bold)
+            };
+            lblPreviewValue = new Label
+            {
+                Left = 145,
+                Top = 215,
+                Width = 290,
+                Height = 35,
+                ForeColor = Color.DarkGreen,
+                Font = new System.Drawing.Font(this.Font, FontStyle.Bold)
+            };
 
-            Label lblOldStyleValue =
-                new Label();
+            // ── CheckBox áp dụng cho dim đã chọn ──
+            chkApplyToDim = new CheckBox
+            {
+                Text = "Áp dụng luôn cho Dimension đã chọn",
+                Left = 20,
+                Top = 258,
+                Width = 415,
+                Height = 22,
+                Checked = false                             
+            };
 
-            lblOldStyleValue.Text =
-                _oldStyle;
+            // ── Buttons ──
+            btnOK = new Button
+            {
+                Text = "OK",
+                Left = 255,
+                Top = 300,
+                Width = 85,
+                Height = 30
+            };
+            btnCancel = new Button
+            {
+                Text = "Cancel",
+                Left = 350,
+                Top = 300,
+                Width = 85,
+                Height = 30
+            };
 
-            lblOldStyleValue.Left = 135;
-            lblOldStyleValue.Top = 20;
-            lblOldStyleValue.Width = 300;
-
-            lblOldStyleValue.Font =
-                new System.Drawing.Font(
-                    this.Font,
-                    FontStyle.Bold);
-
-            lblOldStyleValue.ForeColor =
-                Color.DarkBlue;
-
-
-            // =====================================================
-            // CHẾ ĐỘ
-            // =====================================================
-
-            Label lblMode =
-                new Label();
-
-            lblMode.Text =
-                "Chế độ:";
-
-            lblMode.Left = 20;
-            lblMode.Top = 60;
-            lblMode.Width = 110;
-
-            lblMode.Font =
-                new System.Drawing.Font(
-                    this.Font,
-                    FontStyle.Bold);
-
-
-            Panel pnlMode =
-                new Panel();
-
-            pnlMode.Left = 20;
-            pnlMode.Top = 85;
-            pnlMode.Width = 415;
-            pnlMode.Height = 65;
-
-
-            rbScaleTo =
-                new RadioButton();
-
-            rbScaleTo.Text =
-                "1. Scale DIM to N lần";
-
-            rbScaleTo.Left = 5;
-            rbScaleTo.Top = 5;
-            rbScaleTo.Width = 400;
-
-            rbScaleTo.Checked = true;
-
-
-            rbScaleSmall =
-                new RadioButton();
-
-            rbScaleSmall.Text =
-                "2. Scale DIM nhỏ = 1/N";
-
-            rbScaleSmall.Left = 5;
-            rbScaleSmall.Top = 32;
-            rbScaleSmall.Width = 400;
-
-
-            pnlMode.Controls.Add(
-                rbScaleTo);
-
-            pnlMode.Controls.Add(
-                rbScaleSmall);
-
-
-            // =====================================================
-            // HỆ SỐ
-            // =====================================================
-
-            Label lblScale =
-                new Label();
-
-            lblScale.Text =
-                "Hệ số N (>0):";
-
-            lblScale.Left = 20;
-            lblScale.Top = 170;
-            lblScale.Width = 120;
-
-
-            txtScale =
-                new TextBox();
-
-            txtScale.Left = 145;
-            txtScale.Top = 167;
-            txtScale.Width = 290;
-
-            txtScale.Text = "2";
-
-
-            txtScale.TextChanged +=
-                delegate
+            btnOK.Click += delegate
+            {
+                double value;
+                if (!TryParseScale(txtScale.Text, out value) || value <= 0)
                 {
-                    UpdatePreview();
-                };
-
-
-            // =====================================================
-            // PREVIEW
-            // =====================================================
-
-            Label lblPreview =
-                new Label();
-
-            lblPreview.Text =
-                "Style mới:";
-
-            lblPreview.Left = 20;
-            lblPreview.Top = 215;
-            lblPreview.Width = 120;
-
-            lblPreview.Font =
-                new System.Drawing.Font(
-                    this.Font,
-                    FontStyle.Bold);
-
-
-            lblPreviewValue =
-                new Label();
-
-            lblPreviewValue.Left = 145;
-            lblPreviewValue.Top = 215;
-            lblPreviewValue.Width = 290;
-            lblPreviewValue.Height = 35;
-
-            lblPreviewValue.ForeColor =
-                Color.DarkGreen;
-
-            lblPreviewValue.Font =
-                new System.Drawing.Font(
-                    this.Font,
-                    FontStyle.Bold);
-
-
-            // =====================================================
-            // BUTTON OK
-            // =====================================================
-
-            btnOK =
-                new Button();
-
-            btnOK.Text =
-                "OK";
-
-            btnOK.Left = 255;
-            btnOK.Top = 260;
-            btnOK.Width = 85;
-            btnOK.Height = 30;
-
-
-            // =====================================================
-            // BUTTON CANCEL
-            // =====================================================
-
-            btnCancel =
-                new Button();
-
-            btnCancel.Text =
-                "Cancel";
-
-            btnCancel.Left = 350;
-            btnCancel.Top = 260;
-            btnCancel.Width = 85;
-            btnCancel.Height = 30;
-
-
-            // =====================================================
-            // OK CLICK
-            // =====================================================
-
-            btnOK.Click +=
-                delegate
-                {
-                    double value;
-
-                    if (!TryParseScale(
-                            txtScale.Text,
-                            out value)
-                        || value <= 0)
-                    {
-                        MessageBox.Show(
-                            "Hệ số N phải là số lớn hơn 0.",
-                            "Lỗi nhập liệu",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-
-                        this.DialogResult =
-                            DialogResult.None;
-
-                        txtScale.Focus();
-                        txtScale.SelectAll();
-
-                        return;
-                    }
-
-
-                    ScaleValue =
-                        value;
-
-                    this.DialogResult =
-                        DialogResult.OK;
-                };
-
-
-            // =====================================================
-            // CANCEL CLICK
-            // =====================================================
-
-            btnCancel.Click +=
-                delegate
-                {
-                    this.DialogResult =
-                        DialogResult.Cancel;
-                };
-
-
-            // =====================================================
-            // RADIO CHANGE
-            // =====================================================
-
-            rbScaleTo.CheckedChanged +=
-                delegate
-                {
-                    UpdatePreview();
-                };
-
-            rbScaleSmall.CheckedChanged +=
-                delegate
-                {
-                    UpdatePreview();
-                };
-
-
-            // =====================================================
-            // ADD CONTROLS
-            // =====================================================
-
-            this.Controls.Add(
-                lblOldStyle);
-
-            this.Controls.Add(
-                lblOldStyleValue);
-
-            this.Controls.Add(
-                lblMode);
-
-            this.Controls.Add(
-                pnlMode);
-
-            this.Controls.Add(
-                lblScale);
-
-            this.Controls.Add(
-                txtScale);
-
-            this.Controls.Add(
-                lblPreview);
-
-            this.Controls.Add(
-                lblPreviewValue);
-
-            this.Controls.Add(
-                btnOK);
-
-            this.Controls.Add(
-                btnCancel);
-
-
-            // =====================================================
-            // ENTER / ESC
-            // =====================================================
-
-            this.AcceptButton =
-                btnOK;
-
-            this.CancelButton =
-                btnCancel;
-
-
-            // =====================================================
-            // FOCUS
-            // =====================================================
-
-            this.Shown +=
-                delegate
-                {
+                    MessageBox.Show(
+                        "Hệ số N phải là số lớn hơn 0.",
+                        "Lỗi nhập liệu",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    this.DialogResult = DialogResult.None;
                     txtScale.Focus();
                     txtScale.SelectAll();
-                };
+                    return;
+                }
+                ScaleValue = value;
+                this.DialogResult = DialogResult.OK;
+            };
 
+            btnCancel.Click += delegate
+            {
+                this.DialogResult = DialogResult.Cancel;
+            };
+
+            rbScaleTo.CheckedChanged += delegate { UpdatePreview(); };
+            rbScaleSmall.CheckedChanged += delegate { UpdatePreview(); };
+
+            this.Controls.AddRange(new Control[]
+            {
+                lblOldStyle, lblOldStyleValue,
+                lblMode, pnlMode,
+                lblScale, txtScale,
+                lblPreview, lblPreviewValue,
+                chkApplyToDim,
+                btnOK, btnCancel
+            });
+
+            this.AcceptButton = btnOK;
+            this.CancelButton = btnCancel;
+
+            this.Shown += delegate
+            {
+                txtScale.Focus();
+                txtScale.SelectAll();
+            };
 
             UpdatePreview();
         }
 
-
-        // =========================================================
-        // PARSE SCALE
-        // =========================================================
-
-        private static bool TryParseScale(
-            string text,
-            out double value)
+        private static bool TryParseScale(string text, out double value)
         {
             value = 0;
-
-            if (string.IsNullOrWhiteSpace(text))
-                return false;
-
-            text =
-                text.Trim()
-                    .Replace(',', '.');
-
-            return double.TryParse(
-                text,
-                NumberStyles.Float,
-                CultureInfo.InvariantCulture,
-                out value);
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            text = text.Trim().Replace(',', '.');
+            return double.TryParse(text, NumberStyles.Float,
+                CultureInfo.InvariantCulture, out value);
         }
-
-
-        // =========================================================
-        // UPDATE PREVIEW
-        // =========================================================
 
         private void UpdatePreview()
         {
             double value;
-
-            if (!TryParseScale(
-                    txtScale.Text,
-                    out value)
-                || value <= 0)
+            if (!TryParseScale(txtScale.Text, out value) || value <= 0)
             {
-                lblPreviewValue.Text =
-                    "(Nhập hệ số N > 0)";
-
-                lblPreviewValue.ForeColor =
-                    Color.Gray;
-
+                lblPreviewValue.Text = "(Nhập hệ số N > 0)";
+                lblPreviewValue.ForeColor = Color.Gray;
                 return;
             }
 
-
-            string name;
-
-            if (rbScaleTo.Checked)
-            {
-                name =
-                    _oldStyle +
-                    " Scale " +
-                    value.ToString(
-                        "F2",
-                        CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                name =
-                    _oldStyle +
-                    " Scale 1 chia " +
-                    value.ToString(
-                        "F2",
-                        CultureInfo.InvariantCulture);
-            }
-
+            string name = rbScaleTo.Checked
+                ? _oldStyle + " Scale " + value.ToString("F2", CultureInfo.InvariantCulture)
+                : _oldStyle + " Scale 1 chia " + value.ToString("F2", CultureInfo.InvariantCulture);
 
             if (name.Length > 31)
-            {
-                name =
-                    name.Substring(
-                        0,
-                        31);
-            }
+                name = name.Substring(0, 31);
 
-
-            lblPreviewValue.Text =
-                name;
-
-            lblPreviewValue.ForeColor =
-                Color.DarkGreen;
+            lblPreviewValue.Text = name;
+            lblPreviewValue.ForeColor = Color.DarkGreen;
         }
     }
 }
