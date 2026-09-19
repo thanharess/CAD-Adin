@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using System.Windows.Forms;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
@@ -9,6 +11,9 @@ namespace CADAddin.TextTools
 {
     public class Doichuinhoa
     {
+        // Nhớ lựa chọn lần trước (0..4)
+        private static int _lastOption = 0;
+
         [CommandMethod("Doichuinhoa")]
         public void Run()
         {
@@ -17,28 +22,19 @@ namespace CADAddin.TextTools
             var db = doc.Database;
 
             // ═══════════════════════════════════════════════════════
-            //  Menu chọn kiểu chuyển đổi
+            //  Mở form chọn kiểu
             // ═══════════════════════════════════════════════════════
-            ed.WriteMessage("\nChọn kiểu chuyển đổi:");
-            ed.WriteMessage("\n 1. Hoa           (UPPERCASE)");
-            ed.WriteMessage("\n 2. Thường        (lowercase)");
-            ed.WriteMessage("\n 3. Hoa đầu dòng  (In hoa chữ cái đầu MỖI DÒNG)");
-            ed.WriteMessage("\n 4. Hoa đầu từ    (In hoa chữ cái đầu MỖI TỪ)");
-            ed.WriteMessage("\n 5. Hoa đầu tiên  (Chỉ chữ cái đầu tiên, còn lại thường)");
+            using (var form = new CaseConvertForm(_lastOption))
+            {
+                if (AcApp.ShowModalDialog(form) != DialogResult.OK)
+                {
+                    Utils.Print("✖ Đã hủy lệnh.");
+                    return;
+                }
+                                _lastOption = form.SelectedIndex;
+            }
 
-            var kwo = new PromptKeywordOptions(
-                "\nNhập lựa chọn [Hoa/Thuong/HoaDauDong/HoaDauTu/HoaDauTien] <Hoa>: ")
-            { AllowNone = true };
-            kwo.Keywords.Add("Hoa");
-            kwo.Keywords.Add("Thuong");
-            kwo.Keywords.Add("HoaDauDong");
-            kwo.Keywords.Add("HoaDauTu");
-            kwo.Keywords.Add("HoaDauTien");
-            var kwr = ed.GetKeywords(kwo);
-
-            string opt = (kwr.Status == PromptStatus.OK && !string.IsNullOrEmpty(kwr.StringResult))
-                ? kwr.StringResult
-                : "Hoa";
+            int opt = _lastOption;
 
             // ═══════════════════════════════════════════════════════
             //  Chọn đối tượng Text / MText
@@ -73,11 +69,11 @@ namespace CADAddin.TextTools
                     string newTxt;
                     switch (opt)
                     {
-                        case "Thuong": newTxt = CaseConvert(oldTxt, true); break;
-                        case "HoaDauDong": newTxt = SentenceCase(oldTxt); break;
-                        case "HoaDauTu": newTxt = TitleCase(oldTxt); break;
-                        case "HoaDauTien": newTxt = FirstUpperRestLower(oldTxt); break;
-                        default: newTxt = CaseConvert(oldTxt, false); break; // Hoa
+                        case 1: newTxt = CaseConvert(oldTxt, true); break;   // Thường
+                        case 2: newTxt = SentenceCase(oldTxt); break;   // Hoa đầu dòng
+                        case 3: newTxt = TitleCase(oldTxt); break;   // Hoa đầu từ
+                        case 4: newTxt = FirstUpperRestLower(oldTxt); break;   // Hoa đầu tiên
+                        default: newTxt = CaseConvert(oldTxt, false); break;   // 0 - Hoa
                     }
 
                     if (newTxt != oldTxt)
@@ -95,7 +91,7 @@ namespace CADAddin.TextTools
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  1 & 2) UPPER / lower — giữ nguyên MTEXT format codes
+        //  1 & 2) UPPER / lower
         // ═══════════════════════════════════════════════════════════
         private static string CaseConvert(string s, bool toLower)
         {
@@ -104,8 +100,6 @@ namespace CADAddin.TextTools
             while (i < s.Length)
             {
                 char ch = s[i];
-
-                // Escape sequence
                 if (ch == '\\' && i + 1 < s.Length)
                 {
                     int consumed;
@@ -113,7 +107,6 @@ namespace CADAddin.TextTools
                     i += consumed;
                     continue;
                 }
-
                 sb.Append(toLower ? char.ToLowerInvariant(ch) : char.ToUpperInvariant(ch));
                 i++;
             }
@@ -121,10 +114,7 @@ namespace CADAddin.TextTools
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  3) Hoa đầu dòng (Sentence case)
-        //     - Chữ cái đầu tiên của chuỗi HOẶC đầu mỗi dòng (\P, \n, \r)
-        //       → in hoa
-        //     - Các chữ cái còn lại → in thường
+        //  3) Hoa đầu dòng
         // ═══════════════════════════════════════════════════════════
         private static string SentenceCase(string s)
         {
@@ -136,12 +126,9 @@ namespace CADAddin.TextTools
             {
                 char ch = s[i];
 
-                // ── Escape sequence ──
                 if (ch == '\\' && i + 1 < s.Length)
                 {
                     char next = s[i + 1];
-
-                    // \P = paragraph break → xuống dòng
                     if (next == 'P' || next == 'p')
                     {
                         sb.Append(s, i, 2);
@@ -149,14 +136,12 @@ namespace CADAddin.TextTools
                         startOfLine = true;
                         continue;
                     }
-
                     int consumed;
                     AppendEscape(s, i, sb, out consumed);
                     i += consumed;
                     continue;
                 }
 
-                // ── Ký tự chữ cái ──
                 if (char.IsLetter(ch))
                 {
                     sb.Append(startOfLine
@@ -166,25 +151,17 @@ namespace CADAddin.TextTools
                 }
                 else
                 {
-                    // Xuống dòng thật (\n) cũng tính là đầu dòng mới
                     if (ch == '\n' || ch == '\r')
                         startOfLine = true;
-
                     sb.Append(ch);
                 }
-
                 i++;
             }
-
             return sb.ToString();
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  4) Hoa đầu từ (Title Case)
-        //     - Chữ cái đầu tiên của mỗi từ → in hoa
-        //     - Chữ cái còn lại → in thường
-        //     - Từ phân tách bởi ký tự KHÔNG phải chữ cái (space, dấu câu,
-        //       \P, tab, ...)
+        //  4) Hoa đầu từ
         // ═══════════════════════════════════════════════════════════
         private static string TitleCase(string s)
         {
@@ -196,29 +173,23 @@ namespace CADAddin.TextTools
             {
                 char ch = s[i];
 
-                // ── Escape sequence ──
                 if (ch == '\\' && i + 1 < s.Length)
                 {
                     char next = s[i + 1];
-
                     if (next == 'P' || next == 'p')
                     {
                         sb.Append(s, i, 2);
                         i += 2;
-                        startOfWord = true;    // sau \P → từ mới
+                        startOfWord = true;
                         continue;
                     }
-
                     int consumed;
                     AppendEscape(s, i, sb, out consumed);
                     i += consumed;
-
-                    // \~ (non-breaking space) — coi như ranh giới từ
                     startOfWord = true;
                     continue;
                 }
 
-                // ── Ký tự chữ cái ──
                 if (char.IsLetter(ch))
                 {
                     sb.Append(startOfWord
@@ -228,101 +199,212 @@ namespace CADAddin.TextTools
                 }
                 else
                 {
-                    // Bất kỳ ký tự nào không phải chữ cái → từ mới
                     startOfWord = true;
                     sb.Append(ch);
                 }
-
                 i++;
             }
-
             return sb.ToString();
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  5) Hoa đầu tiên (First Upper, Rest Lower)
-        //     - CHỈ chữ cái đầu tiên của TOÀN chuỗi → in hoa
-        //     - Mọi chữ cái còn lại (kể cả sau \P, \n) → in thường
-        //     - Escape & format code được giữ nguyên, KHÔNG tính là chữ cái
+        //  5) Hoa đầu tiên — lower hết rồi viết hoa 1 chữ cái đầu
         // ═══════════════════════════════════════════════════════════
         private static string FirstUpperRestLower(string s)
         {
             if (string.IsNullOrEmpty(s)) return s;
 
-            var sb = new StringBuilder(s.Length);
-            bool firstLetterDone = false;
+            string lower = CaseConvert(s, toLower: true);
+            var sb = new StringBuilder(lower);
             int i = 0;
 
-            while (i < s.Length)
+            while (i < sb.Length)
             {
-                char ch = s[i];
+                char ch = sb[i];
 
-                // ── 1. Escape sequence ──
-                if (ch == '\\' && i + 1 < s.Length)
+                if (ch == '\\' && i + 1 < sb.Length)
                 {
-                    int consumed;
-                    AppendEscape(s, i, sb, out consumed);
-                    i += consumed;
-                    continue;   // KHÔNG đụng tới firstLetterDone
+                    char next = sb[i + 1];
+                    if (next == 'P' || next == 'p' ||
+                        next == '\\' || next == '{' || next == '}' || next == '~')
+                    {
+                        i += 2;
+                        continue;
+                    }
+                    int j = i + 1;
+                    while (j < sb.Length && sb[j] != ';') j++;
+                    i = (j < sb.Length) ? j + 1 : j;
+                    continue;
                 }
 
-                // ── 2. Ký tự chữ cái ──
                 if (char.IsLetter(ch))
                 {
-                    if (!firstLetterDone)
-                    {
-                        sb.Append(char.ToUpperInvariant(ch));
-                        firstLetterDone = true;
-                    }
-                    else
-                    {
-                        sb.Append(char.ToLowerInvariant(ch));
-                    }
+                    sb[i] = char.ToUpperInvariant(ch);
+                    break;
                 }
-                // ── 3. Ký tự khác (số, dấu câu, space, {, }) ──
-                else
-                {
-                    sb.Append(ch);
-                }
-
                 i++;
             }
-
             return sb.ToString();
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  Hàm phụ: copy escape sequence và trả về số ký tự đã tiêu thụ
-        //    - \P  \p         → 2 ký tự
-        //    - \\  \{  \}  \~ → 2 ký tự
-        //    - \A...; \H...; \f...; ... → tới dấu ; (bao gồm ;)
+        //  Escape helper
         // ═══════════════════════════════════════════════════════════
         private static void AppendEscape(string s, int i, StringBuilder sb, out int consumed)
         {
             char next = s[i + 1];
 
-            // \P \p
             if (next == 'P' || next == 'p')
             {
                 sb.Append(s, i, 2);
                 consumed = 2;
                 return;
             }
-
-            // \\ \{ \} \~
             if (next == '\\' || next == '{' || next == '}' || next == '~')
             {
                 sb.Append(s, i, 2);
                 consumed = 2;
                 return;
             }
-
-            // Code khác: copy tới dấu ; (bao gồm cả ;)
             int j = i + 1;
             while (j < s.Length && s[j] != ';') j++;
-            if (j < s.Length) j++;   // bỏ qua ;
+            if (j < s.Length) j++;
             sb.Append(s, i, j - i);
             consumed = j - i;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Form chọn kiểu chuyển đổi
+    // ═══════════════════════════════════════════════════════════
+    public class CaseConvertForm : Form
+    {
+        private RadioButton rbHoa;
+        private RadioButton rbThuong;
+        private RadioButton rbDauDong;
+        private RadioButton rbMoiTu;
+        private RadioButton rbChuDau;
+
+        private Button btnOK;
+        private Button btnCancel;
+
+        public int SelectedIndex { get; private set; } = 0;
+
+        public CaseConvertForm(int preSelected)
+        {
+            this.Text = "Chọn kiểu chuyển đổi chữ";
+            this.Width = 400;
+            this.Height = 260;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
+            Label lblTitle = new Label
+            {
+                Text = "Chọn kiểu chuyển đổi:",
+                Left = 20,
+                Top = 15,
+                Width = 350,
+                Font = new System.Drawing.Font(this.Font, System.Drawing.FontStyle.Bold)
+            };
+
+            // ── Bọc các RadioButton trong 1 Panel để chúng cùng nhóm ──
+            Panel pnlOpts = new Panel
+            {
+                Left = 20,
+                Top = 42,
+                Width = 350,
+                Height = 150
+            };
+
+            rbHoa = new RadioButton
+            {
+                Text = "1. Hoa           (IN HOA HẾT)",
+                Left = 5,
+                Top = 3,
+                Width = 340
+            };
+            rbThuong = new RadioButton
+            {
+                Text = "2. Thường        (in thường hết)",
+                Left = 5,
+                Top = 27,
+                Width = 340
+            };
+            rbDauDong = new RadioButton
+            {
+                Text = "3. Hoa đầu dòng  (chữ cái đầu MỖI DÒNG)",
+                Left = 5,
+                Top = 51,
+                Width = 340
+            };
+            rbMoiTu = new RadioButton
+            {
+                Text = "4. Hoa đầu từ    (chữ cái đầu MỖI TỪ)",
+                Left = 5,
+                Top = 75,
+                Width = 340
+            };
+            rbChuDau = new RadioButton
+            {
+                Text = "5. Hoa đầu tiên  (chỉ chữ cái đầu, còn lại thường)",
+                Left = 5,
+                Top = 99,
+                Width = 340
+            };
+
+            pnlOpts.Controls.AddRange(new Control[]
+            {
+                rbHoa, rbThuong, rbDauDong, rbMoiTu, rbChuDau
+            });
+
+            // ── Chọn sẵn ──
+            switch (preSelected)
+            {
+                case 1: rbThuong.Checked = true; break;
+                case 2: rbDauDong.Checked = true; break;
+                case 3: rbMoiTu.Checked = true; break;
+                case 4: rbChuDau.Checked = true; break;
+                default: rbHoa.Checked = true; break;
+            }
+
+            // ── Buttons ──
+            btnOK = new Button
+            {
+                Text = "OK",
+                Left = 195,
+                Top = 170,
+                Width = 80,
+                Height = 28,
+                DialogResult = DialogResult.OK
+            };
+            btnCancel = new Button
+            {
+                Text = "Cancel",
+                Left = 290,
+                Top = 170,
+                Width = 80,
+                Height = 28,
+                DialogResult = DialogResult.Cancel
+            };
+
+            btnOK.Click += (s, e) =>
+            {
+                if (rbHoa.Checked) SelectedIndex = 0;
+                else if (rbThuong.Checked) SelectedIndex = 1;
+                else if (rbDauDong.Checked) SelectedIndex = 2;
+                else if (rbMoiTu.Checked) SelectedIndex = 3;
+                else if (rbChuDau.Checked) SelectedIndex = 4;
+            };
+
+            this.Controls.AddRange(new Control[]
+            {
+                lblTitle, pnlOpts, btnOK, btnCancel
+            });
+
+            this.AcceptButton = btnOK;
+            this.CancelButton = btnCancel;
         }
     }
 }
