@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
@@ -10,6 +12,7 @@ namespace CADAddin.Layer
 {
     public class LineTypeToLayer
     {
+        // Nhớ layer đã chọn lần trước (giữa các lần chạy lệnh)
         private static string _lastLayer = null;
 
         [CommandMethod("LAYERCHANGEAM")]
@@ -42,20 +45,50 @@ namespace CADAddin.Layer
             }
             Utils.Print($"Linetype mẫu: {sampleLT}");
 
-            // ── Bước 2: Quét chọn vùng ──
-            ed.WriteMessage("\nQuét chọn vùng (Window / Crossing / Fence / CP...)");
-            var sel = ed.GetSelection();
-            if (sel.Status != PromptStatus.OK)
+            // ── Bước 2: Form chọn PHẠM VI + LAYER ĐÍCH ──
+            var allLayers = GetAllLayers(db);
+            if (allLayers.Count == 0)
             {
-                Utils.Print("✖ Không chọn đối tượng nào.");
+                Utils.Print("✖ Bản vẽ chưa có layer nào.");
                 return;
             }
 
-            // ── Bước 3: Chọn layer đích ──
-            string targetLayer = GetLayerByNumber(ed, db);
+            bool selectAllModel;
+            string targetLayer;
+            using (var form = new LayerPickForm(allLayers, _lastLayer))
+            {
+                if (AcApp.ShowModalDialog(form) != DialogResult.OK)
+                {
+                    Utils.Print("✖ Đã hủy lệnh.");
+                    return;
+                }
+                selectAllModel = form.SelectAllModel;
+                targetLayer = form.SelectedLayer;
+            }
+
             if (string.IsNullOrEmpty(targetLayer))
             {
                 Utils.Print("✖ Chưa chọn layer đích.");
+                return;
+            }
+            _lastLayer = targetLayer;
+
+            // ── Bước 3: Lấy selection theo phạm vi ──
+            PromptSelectionResult sel;
+            if (selectAllModel)
+            {
+                ed.WriteMessage("\n→ Đang quét toàn bộ Model...");
+                sel = ed.SelectAll();
+            }
+            else
+            {
+                ed.WriteMessage("\nChọn vùng (Window / Crossing / Fence / CP...):");
+                sel = ed.GetSelection();
+            }
+
+            if (sel.Status != PromptStatus.OK || sel.Value.Count == 0)
+            {
+                Utils.Print("✖ Không chọn được đối tượng nào.");
                 return;
             }
 
@@ -88,6 +121,9 @@ namespace CADAddin.Layer
             Utils.Print($"   • Bỏ qua: {skipped} đối tượng");
         }
 
+        // ─────────────────────────────────────────────────────────
+        //  Helpers
+        // ─────────────────────────────────────────────────────────
         private static Dictionary<string, string> BuildLayerLinetypeCache(Database db)
         {
             var cache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -119,7 +155,7 @@ namespace CADAddin.Layer
             return lt;
         }
 
-        private static string GetLayerByNumber(Editor ed, Database db)
+        private static List<string> GetAllLayers(Database db)
         {
             var layers = new List<string>();
             using (var tr = db.TransactionManager.StartTransaction())
@@ -132,44 +168,170 @@ namespace CADAddin.Layer
                 }
                 tr.Commit();
             }
-
             layers.Sort(StringComparer.OrdinalIgnoreCase);
-            if (layers.Count == 0)
+            return layers;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Form: chọn PHẠM VI + LAYER ĐÍCH
+    // ═══════════════════════════════════════════════════════════
+    public class LayerPickForm : Form
+    {
+        private RadioButton rbAllModel;
+        private RadioButton rbSelectArea;
+        private ComboBox cboLayer;
+        private TextBox txtFilter;
+        private Button btnOK;
+        private Button btnCancel;
+
+        private readonly List<string> _allLayers;
+
+        public bool SelectAllModel => rbAllModel.Checked;
+        public string SelectedLayer => cboLayer.SelectedItem?.ToString() ?? "";
+
+        public LayerPickForm(List<string> layers, string preSelected)
+        {
+            _allLayers = layers ?? new List<string>();
+
+            this.Text = "Chọn phạm vi & Layer đích";
+            this.Width = 440;
+            this.Height = 260;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
+            // ── Nhóm chọn phạm vi ──
+            Label lblScope = new Label
             {
-                Utils.Print("✖ Bản vẽ chưa có layer nào.");
-                return null;
-            }
-
-            ed.WriteMessage("\n================ LAYER LIST ================");
-            for (int i = 0; i < layers.Count; i++)
-                ed.WriteMessage($"\n[{i}]  {layers[i]}");
-            ed.WriteMessage("\n============================================");
-
-            if (!string.IsNullOrEmpty(_lastLayer))
-                ed.WriteMessage($"\n<Enter = dùng lại layer: {_lastLayer}>");
-
-            var pio = new PromptIntegerOptions("\nNhập SỐ Layer đích: ")
-            {
-                LowerLimit = 0,
-                UpperLimit = layers.Count - 1,
-                AllowNone = true
+                Text = "Phạm vi:",
+                Left = 20,
+                Top = 15,
+                Width = 80,
+                Font = new System.Drawing.Font(this.Font, System.Drawing.FontStyle.Bold)
             };
-            var pir = ed.GetInteger(pio);
 
-            if (pir.Status != PromptStatus.OK)
+            rbSelectArea = new RadioButton
             {
-                if (!string.IsNullOrEmpty(_lastLayer))
-                {
-                    Utils.Print($"↩ Dùng lại layer: {_lastLayer}");
-                    return _lastLayer;
-                }
-                Utils.Print("❌ Chưa có layer nào được chọn trước đó.");
-                return null;
+                Text = "Chọn vùng (Window / Crossing / Fence / CP...)",
+                Left = 20,
+                Top = 42,
+                Width = 400,
+                Checked = true
+            };
+            rbAllModel = new RadioButton
+            {
+                Text = "Toàn bộ Model",
+                Left = 20,
+                Top = 66,
+                Width = 400
+            };
+
+            // ── Ô lọc layer ──
+            Label lblFilter = new Label
+            {
+                Text = "Lọc layer theo chữ cái:",
+                Left = 20,
+                Top = 108,
+                Width = 100
+            };
+            txtFilter = new TextBox
+            {
+                Left = 125,
+                Top = 105,
+                Width = 285
+            };
+            txtFilter.TextChanged += (s, e) => ApplyFilter();
+
+            // ── ComboBox layer ──
+            Label lblLayer = new Label
+            {
+                Text = "Layer đích:",
+                Left = 20,
+                Top = 148,
+                Width = 80
+            };
+            cboLayer = new ComboBox
+            {
+                Left = 105,
+                Top = 145,
+                Width = 310,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            ReloadCombo(_allLayers);
+
+            // Preselect layer
+            if (!string.IsNullOrEmpty(preSelected))
+            {
+                int idx = cboLayer.Items.IndexOf(preSelected);
+                cboLayer.SelectedIndex = (idx >= 0) ? idx : 0;
+            }
+            else if (cboLayer.Items.Count > 0)
+            {
+                cboLayer.SelectedIndex = 0;
             }
 
-            string chosen = layers[pir.Value];
-            _lastLayer = chosen;
-            return chosen;
+            // ── Buttons ──
+            btnOK = new Button
+            {
+                Text = "OK",
+                Left = 230,
+                Top = 190,
+                Width = 80,
+                DialogResult = DialogResult.OK
+            };
+            btnCancel = new Button
+            {
+                Text = "Cancel",
+                Left = 335,
+                Top = 190,
+                Width = 80,
+                DialogResult = DialogResult.Cancel
+            };
+
+            this.Controls.AddRange(new Control[]
+            {
+                lblScope, rbSelectArea, rbAllModel,
+                lblFilter, txtFilter,
+                lblLayer, cboLayer,
+                btnOK, btnCancel
+            });
+
+            this.AcceptButton = btnOK;
+            this.CancelButton = btnCancel;
+
+            this.Shown += (s, e) => txtFilter.Focus();
+        }
+
+        private void ApplyFilter()
+        {
+            string filter = txtFilter.Text?.Trim() ?? "";
+            string current = cboLayer.SelectedItem?.ToString();
+
+            IEnumerable<string> src = string.IsNullOrEmpty(filter)
+                ? _allLayers
+                : _allLayers.Where(x =>
+                    x.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+
+            ReloadCombo(src.ToList());
+
+            if (!string.IsNullOrEmpty(current))
+            {
+                int idx = cboLayer.Items.IndexOf(current);
+                if (idx >= 0) cboLayer.SelectedIndex = idx;
+            }
+            if (cboLayer.SelectedIndex < 0 && cboLayer.Items.Count > 0)
+                cboLayer.SelectedIndex = 0;
+        }
+
+        private void ReloadCombo(List<string> items)
+        {
+            cboLayer.BeginUpdate();
+            cboLayer.Items.Clear();
+            cboLayer.Items.AddRange(items.ToArray());
+            cboLayer.EndUpdate();
         }
     }
 }

@@ -214,7 +214,7 @@
     <Compile Include="Contents\Windows\Addin\Layer\Code\CHANGELAYER.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Layer\Code\LayerChangeReplateLine.cs">
+    <Compile Include="Contents\Windows\Addin\Layer\OLD\LayerChangeReplateLine.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Contents\Windows\Addin\Layer\Code\LAYERDELETE.cs">
@@ -235,7 +235,7 @@
     <Compile Include="Contents\Windows\Addin\Text\Button_Text.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Draw\Code\DeleteLineByLt.cs">
+    <Compile Include="Contents\Windows\Addin\Layer\OLD\DeleteLineByLt.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Contents\Windows\Addin\Text\Code\DeleteTextAndLeader.cs">
@@ -301,7 +301,7 @@
     <Content Include="Contents\Windows\Lisp\lisp\file gồm cả dcl\Layerdelete.lsp" />
     <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Chạy tất cả file lisp theo đường dẫn.lsp" />
     <Content Include="Contents\Windows\Lisp\Ko cần thiêt\Chạy tất cả file lisp.lsp" />
-    <Content Include="Contents\Windows\Addin\Draw\Lisp\Delete Centerline, mark.lsp" />
+    <Content Include="Contents\Windows\Addin\Layer\Lisp\Delete Centerline, mark.lsp" />
     <Content Include="Contents\Windows\Addin\Text\Lisp\Delete text, leader note.lsp" />
     <Content Include="Contents\Windows\Addin\Dim\Lisp\2. DIM CHANGE STYLE WRITE.lsp" />
     <Content Include="Contents\Windows\Addin\Dim\Lisp\3. dimdelete V2.lsp" />

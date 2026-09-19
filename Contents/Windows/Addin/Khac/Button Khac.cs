@@ -23,7 +23,7 @@ namespace CADAddin.Khac
         // =====================================================
 
         [RibbonButton("Tool CAD", "Tools Khác", "Tính diện tích",
-            ToolTip = "Tính diện tích các đối tượng đóng.",
+            ToolTip = "Tính diện tích các đối tượng kín đã join line.",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,

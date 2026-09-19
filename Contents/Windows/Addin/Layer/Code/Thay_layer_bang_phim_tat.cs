@@ -29,32 +29,58 @@ namespace CADAddin.Layer
         public void SetLayerA6() => SetCurrentLayer("AM 6");
 
         /// <summary>
-        /// Đặt layer hiện hành = layerName.
-        /// Nếu layer chưa tồn tại → tạo mới (để tránh lỗi).
+        /// Đặt layer hiện hành theo tên có dạng "AM x".
+        /// Tự động xử lý 2 biến thể:
+        ///   - Có dấu cách:  "AM 0"
+        ///   - Không dấu cách: "AM0"
+        ///
+        /// Quy tắc chọn:
+        ///   • Cả 2 tồn tại  → ưu tiên bản KHÔNG dấu cách ("AM0").
+        ///   • Chỉ 1 tồn tại → dùng bản đang có.
+        ///   • Không có cái nào → tạo mới bản KHÔNG dấu cách ("AM0").
         /// </summary>
-        private static void SetCurrentLayer(string layerName)
+        private static void SetCurrentLayer(string layerNameWithSpace)
         {
+            // Sinh tên không dấu cách từ tên có dấu cách: "AM 0" -> "AM0"
+            string layerNameNoSpace = layerNameWithSpace.Replace(" ", "");
+
             var doc = AcApp.DocumentManager.MdiActiveDocument;
             var db = doc.Database;
+
+            string targetLayer;
 
             using (var tr = db.TransactionManager.StartTransaction())
             {
                 var lt = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
 
-                if (!lt.Has(layerName))
+                bool hasWithSpace = lt.Has(layerNameWithSpace);
+                bool hasNoSpace = lt.Has(layerNameNoSpace);
+
+                if (hasNoSpace)
                 {
-                    // Tự tạo layer nếu chưa có (giống hành vi thân thiện)
+                    // Ưu tiên bản không dấu cách (kể cả khi cả 2 đều có)
+                    targetLayer = layerNameNoSpace;
+                }
+                else if (hasWithSpace)
+                {
+                    // Chỉ có bản có dấu cách
+                    targetLayer = layerNameWithSpace;
+                }
+                else
+                {
+                    // Không có cả 2 → tạo mới bản không dấu cách
                     lt.UpgradeOpen();
-                    var newLay = new LayerTableRecord { Name = layerName };
+                    var newLay = new LayerTableRecord { Name = layerNameNoSpace };
                     lt.Add(newLay);
                     tr.AddNewlyCreatedDBObject(newLay, true);
+                    targetLayer = layerNameNoSpace;
                 }
 
                 tr.Commit();
             }
 
             // Đặt layer hiện hành
-            AcApp.SetSystemVariable("CLAYER", layerName);
+            AcApp.SetSystemVariable("CLAYER", targetLayer);
         }
 
         // ═══════════════════════════════════════════════════════════

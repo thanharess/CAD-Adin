@@ -44,22 +44,15 @@ namespace CADAddin.Layer
             RunCommand("CHANGELAYER");
         }
 
-        [RibbonDropItem("Layer Change", "Thay đổi Linetype AM",
-            ToolTip = "Chuyển line theo linetype sang layer khác",
+        [RibbonDropItem("Layer Change", "Đổi layer theo Linetype",
+            ToolTip = "Đổi layer cho các linetype trùng nhau",
             Icon = ICON_SMALL, Order = 2)]
         public static void Change_LayerChangeAM()
         {
             RunCommand("LAYERCHANGEAM");
         }
 
-        [RibbonDropItem("Layer Change", "Replace Layer Line",
-            ToolTip = "Chuyển line từ layer này sang layer khác theo số thứ tự",
-            Icon = ICON_SMALL, Order = 3)]
-        public static void Change_ReplaceLine()
-        {
-            RunCommand("LAYERCHANGEREPLATELINE");
-        }
-
+     
         // ═══════════════════════════════════════════════════════════
         // DROPDOWN 2: LAYER TOOLS — Xóa và công cụ
         // ═══════════════════════════════════════════════════════════

@@ -36,18 +36,7 @@ namespace CADAddin.Draw
             RunCommand("DIMSCALESYLENEW");
         }
        
-            //2
-            [RibbonButton("Tool CAD", "Line Tool", "Xoá Linetype",
-                ToolTip = "Xoá các line dựa theo linetype được chọn",
-                Size = RibbonItemSize.Standard,
-                Icon = "A1.png",
-                NewRow = true,
-                Order = 2)]
-            public static void DeleteLineByLt()
-            {
-                // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
-                // còn nếu vẫn muốn dùng lệnh thì:
-                RunCommand("DeleteLineByLt");
+          
 
 
                 // Thêm nút khác tương tự...
@@ -56,6 +45,6 @@ namespace CADAddin.Draw
                 // {
                 //     RunCommand("TENLENH");
                 // }
-            }
+            
     }
 }
