@@ -284,9 +284,32 @@ namespace CADAddin.Dim
                     DimStyleTableRecord newStyle =
                         new DimStyleTableRecord();
 
+                    // -------------------------------------------------
+                    // Copy toàn bộ thuộc tính từ style gốc
+                    // -------------------------------------------------
+
+                    newStyle.CopyFrom(oldStyle);
+
+                    // -------------------------------------------------
+                    // QUAN TRỌNG:
+                    //
+                    // CopyFrom có thể copy luôn Name của style gốc.
+                    // Vì vậy PHẢI đặt Name lại sau CopyFrom.
+                    // -------------------------------------------------
+
                     newStyle.Name =
                         newStyleName;
 
+                    // -------------------------------------------------
+                    // Ghi DIMLFAC sau CopyFrom
+                    // -------------------------------------------------
+
+                    newStyle.Dimlfac =
+                        effectiveScale;
+
+                    // -------------------------------------------------
+                    // Add vào DimStyleTable
+                    // -------------------------------------------------
 
                     ObjectId newStyleId =
                         dimStyles.Add(newStyle);
@@ -295,29 +318,12 @@ namespace CADAddin.Dim
                         newStyle,
                         true);
 
-
-                    // =================================================
-                    // COPY TOÀN BỘ THUỘC TÍNH
-                    // =================================================
-
-                    newStyle.CopyFrom(oldStyle);
-
-
-                    // =================================================
-                    // GHI DIMLFAC SAU CopyFrom
-                    // =================================================
-
-                    newStyle.Dimlfac =
-                        effectiveScale;
-
-
-                    // =================================================
-                    // ĐẶT LÀM CURRENT
-                    // =================================================
+                    // -------------------------------------------------
+                    // Đặt làm Current
+                    // -------------------------------------------------
 
                     db.Dimstyle =
                         newStyleId;
-
 
                     tr.Commit();
                 }
