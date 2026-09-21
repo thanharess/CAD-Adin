@@ -13,7 +13,7 @@ namespace BlockTools
 {
     public class Equalize
     {
-        [CommandMethod("EQCIRCLE")]
+        [CommandMethod("Equalize")]
         public void EqCircle()
         {
             var doc = AcApp.DocumentManager.MdiActiveDocument;

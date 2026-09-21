@@ -163,13 +163,13 @@
     <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockSaveAsNew.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockSwap.cs">
+    <Compile Include="Contents\Windows\Addin\Block\Code Block\bỏ\BlockSwap.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\BlockUnits.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Block\Code Block\Code\Equalize.cs">
+    <Compile Include="Contents\Windows\Addin\Draw\Code\Equalize.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Contents\Windows\Addin\Dim\Button Dim.cs">
@@ -276,7 +276,7 @@
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\6. Pha khoi tat ca block trung ten.lsp" />
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\7. Rename block.lsp" />
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\8. Replace block.lsp" />
-    <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\9. Sua cung,hinh tron, khoi vuong theo nhau.lsp" />
+    <Content Include="Contents\Windows\Addin\Draw\Lisp\9. Sua cung,hinh tron, khoi vuong theo nhau.lsp" />
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\10. Swap block.lsp" />
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\11. thay doi unit tat ca cac block.lsp" />
     <Content Include="Contents\Windows\Addin\Block\Code Block\Lisp\12. Xoa block.lsp" />

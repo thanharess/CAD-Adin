@@ -140,14 +140,7 @@ namespace CADAddin.Block
             RunCommand("BLSAVEASNEWBLOCK");
         }
 
-        [RibbonDropItem("Block Tools", "Đổi Block",
-            ToolTip = "Hoán đổi vị trí giữa hai block",
-            Icon = ICON_SMALL, Order = 2)]
-        public static void Tools_BLSWAP()
-        {
-            RunCommand("BLSWAP");
-        }
-
+       
         [RibbonDropItem("Block Tools", "Change Units Block",
             ToolTip = "Đổi tất cả đơn vị về mm",
             Icon = ICON_SMALL, Order = 3)]

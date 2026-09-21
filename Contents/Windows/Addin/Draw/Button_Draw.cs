@@ -23,28 +23,41 @@ namespace CADAddin.Draw
         // =====================================================
 
         //1
-        [RibbonButton("Tool CAD", "Layer Tool", "Replace Layer line",
-            ToolTip = "Chuyển toàn bộ line layer được chọn sang line layer khác",
+        [RibbonButton("Tool CAD", "Draw Tool", "Scale line",
+            ToolTip = "Scale mật độ chiều dài line",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",
             NewRow = true,
             Order = 2)]
-        public static void DIMSCALESYLENEW()
+        public static void ScaleLine()
         {
             // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
             // còn nếu vẫn muốn dùng lệnh thì:
-            RunCommand("DIMSCALESYLENEW");
+            RunCommand("ScaleLine");
         }
-       
-          
 
 
-                // Thêm nút khác tương tự...
-                // [RibbonButton(...)]
-                // public static void TenNut()
-                // {
-                //     RunCommand("TENLENH");
-                // }
-            
+        //1
+        [RibbonButton("Tool CAD", "Draw Tool", "Equalize",
+            ToolTip = "Thay đổi kích thước các đối tượng bằng nhau theo đối tượng mẫu giống hình dạng",
+            Size = RibbonItemSize.Standard,
+            Icon = "A1.png",
+            NewRow = true,
+            Order = 2)]
+        public static void Equalize()
+        {
+            // Nếu bạn đã viết bằng C# thuần thì gọi method trực tiếp
+            // còn nếu vẫn muốn dùng lệnh thì:
+            RunCommand("Equalize");
+        }
+
+
+        // Thêm nút khác tương tự...
+        // [RibbonButton(...)]
+        // public static void TenNut()
+        // {
+        //     RunCommand("TENLENH");
+        // }
+
     }
 }
