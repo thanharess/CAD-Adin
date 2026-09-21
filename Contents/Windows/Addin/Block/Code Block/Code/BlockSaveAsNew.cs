@@ -28,7 +28,7 @@ namespace CADAddin.Block
             if (psr.Status != PromptStatus.OK) return;
             string newName = psr.StringResult.Trim();
 
-            var ppr = ed.GetPoint("\nChọn điểm chèn block mới: ");
+            var ppr = ed.GetPoint("\nChọn vị trí thể hiện cho block mới: ");
             if (ppr.Status != PromptStatus.OK) return;
             var insPt = ppr.Value;
 
