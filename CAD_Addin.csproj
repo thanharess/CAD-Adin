@@ -181,7 +181,7 @@
     <Compile Include="Contents\Windows\Addin\Dim\Code\DimChangeStyleWrite.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Dim\Code\DimDelete V2.cs">
+    <Compile Include="Contents\Windows\Addin\Dim\Lisp\DimDelete V2.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Contents\Windows\Addin\Dim\Code\DIMDELETE.cs">

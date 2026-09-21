@@ -116,13 +116,8 @@ namespace CADAddin.Dim
             RunCommand("DimTextStyle");
         }
 
-        [RibbonDropItem("Dim Edit", "Delete Dim V2",
-            ToolTip = "Xóa dim nâng cao [1:Chọn / 2:Theo layer / 3:MLEADER / 4:Theo layer+vùng / 5:Tất cả]",
-            Icon = ICON_SMALL, Order = 3)]
-        public static void Edit_Deletedim()
-        {
-            RunCommand("Deletedim");
-        }
+     
+
 
         [RibbonDropItem("Dim Edit", "Delete Dim Auto",
             ToolTip = "Xóa DIMENSION",
