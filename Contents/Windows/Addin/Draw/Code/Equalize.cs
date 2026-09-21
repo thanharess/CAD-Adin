@@ -52,7 +52,7 @@ namespace BlockTools
         // ═══════════════════════════════════════════════════════════
         //  EQCIRCLE — Đồng nhất bán kính đường tròn
         // ═══════════════════════════════════════════════════════════
-        [CommandMethod("Equalize")]
+        [CommandMethod("EqCircle")]
         public void EqCircle()
         {
             var doc = AcApp.DocumentManager.MdiActiveDocument;

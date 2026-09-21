@@ -256,7 +256,7 @@
     <Compile Include="Contents\Windows\Addin\Text\Code\Uclv.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Contents\Windows\Addin\Text\Code\XoaChuTrongText.cs">
+    <Compile Include="Contents\Windows\Addin\Text\Code\XoahoacthemChuTrongText.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">

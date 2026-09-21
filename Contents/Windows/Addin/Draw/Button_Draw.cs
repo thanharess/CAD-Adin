@@ -38,7 +38,7 @@ namespace CADAddin.Draw
 
 
         //1
-        [RibbonButton("Tool CAD", "Draw Tool", "Equalize",
+        [RibbonButton("Tool CAD", "Draw Tool", "Chuyển cung,rectange bằng nhau",
             ToolTip = "Thay đổi kích thước các đối tượng bằng nhau theo đối tượng mẫu giống hình dạng",
             Size = RibbonItemSize.Standard,
             Icon = "A1.png",

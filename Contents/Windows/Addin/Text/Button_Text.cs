@@ -33,15 +33,15 @@ namespace CADAddin.TextTools
             Order = 1)]
         public static void TextCleanDD()
         {
-            RunCommand("Xoachutrongtext");
+            RunCommand("XoahoacthemChuTrongText");
         }
 
-        [RibbonDropItem("Text Clean", "Xóa chữ trong text",
-            ToolTip = "Xóa cụm từ trong text được chọn",
+        [RibbonDropItem("Text Clean", "Xóa và thêm chữ text",
+            ToolTip = "Xóa hoặc thêm cụm từ trong text được chọn",
             Icon = ICON_SMALL, Order = 1)]
         public static void Clean_XoaChuTrongText()
         {
-            RunCommand("Xoachutrongtext");
+            RunCommand("XoahoacthemChuTrongText");
         }
 
         [RibbonDropItem("Text Clean", "Tắt màu nền TXT",
@@ -97,7 +97,7 @@ namespace CADAddin.TextTools
             Icon = ICON_SMALL, Order = 3)]
         public static void Edit_Doichuinhoa()
         {
-            RunCommand("Doichuinhoa");
+            RunCommand("Doiinhoachu");
         }
 
         [RibbonDropItem("Text Edit", "Times New Roman",

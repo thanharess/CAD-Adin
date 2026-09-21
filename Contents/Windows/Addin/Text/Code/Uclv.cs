@@ -9,12 +9,12 @@ using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace CADAddin.TextTools
 {
-    public class Doichuinhoa
+    public class Doiinhoachu
     {
         // Nhớ lựa chọn lần trước (0..4)
         private static int _lastOption = 0;
 
-        [CommandMethod("Doichuinhoa")]
+        [CommandMethod("Doiinhoachu")]
         public void Run()
         {
             var doc = AcApp.DocumentManager.MdiActiveDocument;

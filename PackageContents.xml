@@ -11,14 +11,14 @@
   <RuntimeRequirements
       OS="Win64"
       Platform="AutoCAD*"
-      SeriesMin="R24.0"
+      SeriesMin="R24.1"
       SeriesMax="R99.0" />
 
   <Components Description="CAD Addin Components">
     <RuntimeRequirements
         OS="Win64"
         Platform="AutoCAD*"
-        SeriesMin="R24.0"
+        SeriesMin="R24.1"
         SeriesMax="R99.0" />
 
     <ComponentEntry
